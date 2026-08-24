@@ -1,0 +1,40 @@
+# ===== Python =====
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+dist/
+build/
+
+# 只忽略根目录下的 venv, .venv, env 文件夹
+/venv/
+/.venv/
+/env/
+
+# ===== 环境变量（含密钥，绝对不能提交） =====
+.env
+.env.local
+.env.*.local
+
+# ===== 数据与日志 =====
+chroma_data/
+*.log
+logs/
+
+# ===== IDE / 编辑器 =====
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ===== 操作系统 =====
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# ===== Docker 相关（可选） =====
+# docker-compose.override.yml
+
+# ===== 其他 =====
+*.tmp
+*.bak

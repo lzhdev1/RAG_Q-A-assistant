@@ -1,0 +1,29 @@
+version: "3.8"
+
+services:
+  # RAG 应用服务
+  rag-app:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    container_name: rag-app
+    ports:
+      - "8000:8000"
+    volumes:
+      # 挂载本地目录到容器，实现代码热更新 + 数据持久化
+      - ./app:/app
+      - ./docs:/app/docs
+      - ./chroma_data:/app/chroma_data
+    env_file:
+      - ./app/.env
+    restart: unless-stopped
+
+  # 向量数据库服务（Chroma 独立部署模式）
+  chroma-db:
+    image: chromadb/chroma:latest
+    container_name: chroma-db
+    ports:
+      - "8001:8000"
+    volumes:
+      - ./chroma_data:/chroma/chroma
+    restart: unless-stopped
