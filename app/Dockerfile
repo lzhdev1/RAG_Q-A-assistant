@@ -1,26 +1,42 @@
-# 使用 Python 3.11 官方镜像作为基础
-FROM python:3.11-slim
+# ==========================================
+# 阶段 1: 构建依赖 (Builder)
+# ==========================================
+FROM python:3.10-slim AS builder
 
-# 设置工作目录
 WORKDIR /app
 
-# 安装系统级依赖（PDF解析需要的库）
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    && rm -rf /var/lib/apt/lists/*
+# 优化点1: 设置环境变量，防止生成 .pyc 文件，减少体积
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
 
-# 先复制依赖文件，利用 Docker 缓存层加速后续构建
+# 优化点2: 先只复制依赖文件，利用 Docker 缓存
+# 只要 requirements.txt 不变，这一层就不会重新构建
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 
-# 复制应用代码
-COPY . .
+RUN pip install --no-cache-dir --prefix=/install -r requirements.txt
 
-# 创建文档和数据库目录
-RUN mkdir -p /app/docs /app/chroma_data
+# ==========================================
+# 阶段 2: 运行环境 (Runner)
+# ==========================================
+FROM python:3.10-slim AS runner
 
-# 暴露 FastAPI 端口
+WORKDIR /app
+
+# 优化点3: 从 builder 阶段复制纯净的 Python 包
+COPY --from=builder /install /usr/local
+
+# 优化点4: 创建非 root 用户，提升安全性
+RUN useradd -m -u 1000 appuser && chown -R appuser:appuser /app
+USER appuser
+
+# 复制项目代码 (放在最后，因为代码变动最频繁)
+COPY --chown=appuser:appuser . .
+
+# 优化点5: 声明数据卷，保护 ChromaDB 数据
+VOLUME ["/app/chroma_data"]
+
+# 暴露端口 (根据你的 app.py 或 main.py 修改)
 EXPOSE 8000
 
 # 启动命令
-CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["python", "main.py"]
