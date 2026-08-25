@@ -25,9 +25,14 @@ WORKDIR /app
 # 优化点3: 从 builder 阶段复制纯净的 Python 包
 COPY --from=builder /install /usr/local
 
-# 优化点4: 创建非 root 用户，提升安全性
-RUN useradd -m -u 1000 appuser && chown -R appuser:appuser /app
-USER appuser
+# 优化点4: 安装 gosu 用于 entrypoint 中切换用户，创建非 root 用户
+RUN apt-get update && apt-get install -y --no-install-recommends gosu \
+    && rm -rf /var/lib/apt/lists/* \
+    && useradd -m -u 1000 appuser
+
+# 复制 entrypoint 脚本
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
 # 复制项目代码 (放在最后，因为代码变动最频繁)
 COPY --chown=appuser:appuser . .
@@ -35,8 +40,9 @@ COPY --chown=appuser:appuser . .
 # 优化点5: 声明数据卷，保护 ChromaDB 数据
 VOLUME ["/app/chroma_data"]
 
-# 暴露端口 (根据你的 app.py 或 main.py 修改)
+# 暴露端口
 EXPOSE 8000
 
-# 启动命令
+# 使用 entrypoint 脚本启动（先修复权限，再切换用户）
+ENTRYPOINT ["/entrypoint.sh"]
 CMD ["python", "main.py"]
