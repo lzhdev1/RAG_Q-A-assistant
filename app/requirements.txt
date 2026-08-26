@@ -12,3 +12,6 @@ uvicorn==0.30.0
 python-multipart==0.0.9
 pypdf
 dashscope
+ragas>=0.2.0
+numpy
+rank_bm25

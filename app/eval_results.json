@@ -1,0 +1,280 @@
+{
+  "overall_scores": {
+    "faithfulness": 0.9219444444444445,
+    "answer_relevancy": 0.6985407262998565,
+    "context_precision": 0.7388888888299997
+  },
+  "per_sample": [
+    {
+      "question": "论文将现有的行人重识别（Re-ID）方法主要分为哪两种设置？",
+      "answer": "根据参考资料，论文将现有的行人重识别（Re-ID）方法主要分为**封闭世界（closed-world）**和**开放世界（open-world）**两种设置[来源1]。",
+      "scores": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.9619896122630927,
+        "context_precision": 0.8333333332916666
+      }
+    },
+    {
+      "question": "在封闭世界的行人重识别中，特征表示学习主要包含哪四种策略？",
+      "answer": "根据提供的参考资料，文中指出封闭世界行人重识别的特征表示学习主要有四种策略，但资料中仅明确列举了前两种：a) 全局特征（Global Feature）和 b) 局部特征（Local Feature）[来源2]。由于参考资料内容不完整，未提供另外两种策略的具体信息，因此根据现有参考资料，暂时无法回答该问题。",
+      "scores": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.0,
+        "context_precision": 0.9999999999
+      }
+    },
+    {
+      "question": "论文中提到的用于行人重识别的三种广泛研究的损失函数是什么？",
+      "answer": "根据参考资料，论文中提到的用于行人重识别的三种广泛研究的损失函数分别是：恒等损失（Identity Loss）、验证损失（Verification Loss）和三元组损失（Triplet Loss）[来源1]。",
+      "scores": {
+        "faithfulness": 0.75,
+        "answer_relevancy": 0.813593212579394,
+        "context_precision": 0.99999999995
+      }
+    },
+    {
+      "question": "在评估行人重识别系统时，两个广泛使用的度量标准是什么？",
+      "answer": "根据参考资料，评估行人重识别（Re-ID）系统时，两个广泛使用的度量标准是累积匹配特性（Cumulative Matching Characteristics, CMC）和平均精度均值（mean Average Precision, mAP）[来源1]。",
+      "scores": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.8145613176961881,
+        "context_precision": 0.9999999999
+      }
+    },
+    {
+      "question": "开放世界（open-world）行人重识别主要包含哪五个方面的挑战？",
+      "answer": "根据参考资料，开放世界（open-world）行人重识别主要包含以下五个方面的挑战：\n1. 异构数据（Heterogeneous Data）[来源1]\n2. 原始图像/视频输入（Raw Images/Videos）[来源1]\n3. 标签不可用或有限（Unavailable/Limited Labels）[来源1]\n4. 噪声标注（Noisy Annotation）[来源1]\n5. 开放集查询（Open-set）[来源1]",
+      "scores": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.86491869355427,
+        "context_precision": 0.49999999995
+      }
+    },
+    {
+      "question": "论文提出的新评估指标 mINP 代表什么，其目的是什么？",
+      "answer": "根据参考资料，mINP 的全称为 **mean Inverse Negative Penalty**[来源1]。\n\n其主要目的包括：\n1. **衡量检索成本**：用于指示在检索过程中找到所有正确匹配所需的成本[来源1]。\n2. **补充现有评估体系**：作为 CMC 和 mAP 等现有指标的补充，为真实应用场景下的行人重识别（Re-ID）系统提供额外的评估标准[来源1]。\n3. **确保检索完整性**：要求所有正确匹配具有较低的排名值，以保证目标人物被尽可能准确地检索出来，避免其在顶部检索结果中被忽略[来源1]。",
+      "scores": {
+        "faithfulness": 0.625,
+        "answer_relevancy": 0.7832414454745432,
+        "context_precision": 0.99999999995
+      }
+    },
+    {
+      "question": "论文提出的新基线模型 AGW 的全称是什么？",
+      "answer": "根据现有参考资料，暂时无法回答该问题。",
+      "scores": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.0,
+        "context_precision": 0.0
+      }
+    },
+    {
+      "question": "在“未充分研究的开放性问题”中，论文提到了哪五个方面？",
+      "answer": "根据参考资料，论文在“未充分研究的开放性问题”（Under-Investigated Open Issues）中提到的五个方面包括：\n1. 不可控的数据收集（uncontrollable data collection）[来源1]\n2. 人工标注最小化（human annotation minimization）[来源1]\n3. 领域特定/可泛化的架构设计（domain-specific/generalizable architecture design）[来源1]\n4. 动态模型更新（dynamic model updating）[来源1]\n5. 高效模型部署（efficient model deployment）[来源1]",
+      "scores": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.8677690712644671,
+        "context_precision": 0.9999999999
+      }
+    },
+    {
+      "question": "针对“不可控的数据收集”问题，论文提到了哪两个具体的挑战？",
+      "answer": "根据提供的参考资料，针对“不可控的数据收集”问题，论文主要提到了以下两个具体挑战：\n\n1. **数据捕获的不可预测性**：真实复杂环境中的数据可能来自不可预测的模态、模态组合，甚至是换装数据[来源1]。\n2. **多异构数据问题**：实际应用中采集的行人图像分辨率差异很大，且查询集和图库集可能包含不同的模态（如可见光、热成像、深度图或文本描述等）[来源1]。",
+      "scores": {
+        "faithfulness": 0.6666666666666666,
+        "answer_relevancy": 0.9205387753970719,
+        "context_precision": 0.49999999995
+      }
+    },
+    {
+      "question": "论文在结论部分提到，新提出的 AGW 基线在多少个数据集和任务上取得了有竞争力的性能？",
+      "answer": "根据参考资料，新提出的 AGW 基线在**四个 Re-ID 任务**上取得了有竞争力的性能 [来源1]。资料中未将数据集与任务合并给出具体总数，但明确指出该基线在两个大型视频 Re-ID 数据集（MARS 和 DukeVideo）以及 PRID2011 和 iLIDS-VID 数据集上也取得了有竞争力的结果 [来源2][来源3]。",
+      "scores": {
+        "faithfulness": 0.4,
+        "answer_relevancy": 0.7828253038067325,
+        "context_precision": 0.9999999999
+      }
+    },
+    {
+      "question": "视频行人重识别（Video-based ReID）系统由哪两个主要组件构成？",
+      "answer": "根据参考资料，视频行人重识别（Video-based ReID）系统由两个主要组件构成：**特征学习（feature learning）**和**度量学习（metric learning）**[来源1]。",
+      "scores": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.8320868719472703,
+        "context_precision": 0.9999999999
+      }
+    },
+    {
+      "question": "论文中提到的四个基准数据集（benchmark datasets）是什么？",
+      "answer": "根据参考资料，论文中提到的四个基准数据集分别为：MARS、DukeMTMC-VideoReID、PRID2011 和 iLIDS-VID [来源1]。",
+      "scores": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.8827892498109813,
+        "context_precision": 0.99999999995
+      }
+    },
+    {
+      "question": "在空间特征学习中，基于属性的方法（attribute-based approaches）将人的属性分为了哪六个组？",
+      "answer": "根据参考资料，基于属性的方法将人的属性分为以下六个组：性别（gender）、头部（head）、鞋子（shoes）、上半身（upper body）、下半身（lower body）以及附件（attachments）[来源3]。",
+      "scores": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.9006075677352303,
+        "context_precision": 0.99999999995
+      }
+    },
+    {
+      "question": "在基于动作的方法（action-based approaches）中，姿态（pose）估计可以分为哪两种方式？",
+      "answer": "根据参考资料，姿态（pose）估计可以分为**粗略估计（coarse）**和**精细估计（fine）**两种方式[来源1]。",
+      "scores": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.8969124304358399,
+        "context_precision": 0.49999999995
+      }
+    },
+    {
+      "question": "基于步态的方法（gait-based approaches）具有哪些重要特征？",
+      "answer": "根据提供的参考资料，基于步态的方法（gait-based approaches）具有以下重要特征：\n- **独特性**：步态具有独特的模式，能够反映行人的行走风格[来源1]。\n- **可测量距离广**：步态可以在任意距离下进行测量[来源1]。\n- **易受生理因素影响**：步态会受到年龄增长和疾病的影响[来源1]。\n\n此外，步态也被归类为人类软生物特征之一[来源1]。",
+      "scores": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.8783958748644991,
+        "context_precision": 0.9999999999
+      }
+    },
+    {
+      "question": "光流（optical flow）是如何定义的？",
+      "answer": "根据参考资料，光流（optical flow）被定义为序列中连续帧之间物体的运动[来源3]。它是由物体与相机之间的相对距离所决定的[来源3]。",
+      "scores": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.8515569243273052,
+        "context_precision": 0.9999999999
+      }
+    },
+    {
+      "question": "深度度量学习（deep metric learning）技术通过优化什么来实现高重识别准确率？",
+      "answer": "根据参考资料，深度度量学习（deep metric learning）技术通过优化**损失函数（loss function）**来实现高重识别准确率[来源1]。",
+      "scores": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.9153348184850755,
+        "context_precision": 0.9999999999
+      }
+    },
+    {
+      "question": "弱监督学习（weakly supervised learning）在视频行人重识别中是如何定义的？",
+      "answer": "根据现有参考资料，暂时无法回答该问题。参考资料中仅提及弱监督学习近期被应用于视频行人重识别[176–178]，但关于其定义的句子“Weakly supervised learning means identify -”在此处中断，未提供完整的定义内容。",
+      "scores": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.0,
+        "context_precision": 0.0
+      }
+    },
+    {
+      "question": "在讨论部分，论文认为视频行人重识别系统中的时间特征会带来哪两个副作用？",
+      "answer": "根据现有参考资料，暂时无法回答该问题。",
+      "scores": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.0,
+        "context_precision": 0.0
+      }
+    },
+    {
+      "question": "在“挑战与未来方向”部分，论文提到了哪两个与服装变化相关的挑战性问题？",
+      "answer": "根据参考资料，在“挑战与未来方向”部分提到的与服装变化相关的两个挑战性问题如下：\n\n1. **长期服装变化问题（long-term cloth-changing）**：指尽管因更换衣物导致外观发生变化，仍需准确识别同一人的问题。该问题通常需要记录数天至数月的视频数据，以应对人员长时间着装不一致带来的挑战 [来源1]。\n2. **真实场景下的不稳定性问题（unstable in real scenarios）**：资料中将其列为另一个与服装变化相关的挑战性问题，但受限于提供的文本截断，其完整的具体描述未能完全呈现 [来源1]。\n\n（注：以上回答严格基于所提供的参考资料整理，未添加任何外部信息或主观推测。）",
+      "scores": {
+        "faithfulness": 0.75,
+        "answer_relevancy": 0.9233749389736818,
+        "context_precision": 0.0
+      }
+    },
+    {
+      "question": "论文指出，使用自动检测器获取行人图像时，通常会遇到哪两种检测错误？",
+      "answer": "根据参考资料，使用自动检测器获取行人图像时通常会遇到两种检测错误：过度背景（excessive background）和部分缺失（part missing）[来源1]。",
+      "scores": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.970182903556685,
+        "context_precision": 0.9999999999666667
+      }
+    },
+    {
+      "question": "为解决对齐问题，论文提出的行人对齐网络（PAN）是如何利用注意力机制的？",
+      "answer": "根据参考资料，行人对齐网络（PAN）利用注意力机制的方式如下：\n\n1. **基于特征图的强激活特性**：当卷积神经网络学习区分不同身份时，所学的特征图通常会在人体区域表现出强烈激活，而非背景[来源4]。PAN借此注意力机制聚焦于人体关键区域[来源4]。\n2. **自适应定位与对齐**：该网络利用此注意力机制，能够自适应地定位并对齐边界框内的行人[来源1]。\n3. **免标注联合学习**：借助该机制，PAN能够在无需额外标注的情况下，同时完成行人对齐与判别性特征描述符的学习[来源4]。",
+      "scores": {
+        "faithfulness": 0.8,
+        "answer_relevancy": 0.8255740583455423,
+        "context_precision": 0.8333333332916666
+      }
+    },
+    {
+      "question": "PAN的训练过程由哪三个组件构成？",
+      "answer": "根据参考资料，PAN的训练过程由以下三个组件构成：\n1) 一个用于预测输入图像身份的神经网络；[来源1]\n2) 一个用于重新定位输入图像的仿射变换估计模块；[来源1]\n3) 另一个组件（注：提供的参考资料中该部分内容在此处被截断，未显示完整描述）。[来源1]",
+      "scores": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.9529367452619272,
+        "context_precision": 0.99999999995
+      }
+    },
+    {
+      "question": "在PAN中，仿射参数（affine parameters）是如何被估计的？",
+      "answer": "根据参考资料，PAN的架构中包含一个**仿射估计网络（affine estimation network）**，其作用是估计仿射变换以重新定位输入图像[来源3038][来源3039]。但提供的资料中并未详细说明该仿射参数的具体估计方法、数学公式或训练机制。因此，根据现有参考资料，暂时无法回答该问题。",
+      "scores": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.0,
+        "context_precision": 0.0
+      }
+    },
+    {
+      "question": "论文中提到的空间变换网络（STN）在处理检测错误时起到了什么作用？",
+      "answer": "根据参考资料，空间变换网络（STN）在处理检测错误时主要起到以下作用：它能够裁剪包含过多背景的检测图像，或为存在缺失部分的特征图边界填充零值。通过这些操作，STN可以有效降低由检测错误（misdetection）所引发的尺度和位置变化带来的负面影响[来源1]。",
+      "scores": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.95182835821019,
+        "context_precision": 0.9999999999
+      }
+    },
+    {
+      "question": "论文提出的PAN方法与使用“patch matching”（补丁匹配）策略的方法有何显著不同？",
+      "answer": "根据参考资料，PAN方法与使用“patch matching”策略的方法在核心目标与适用条件上存在以下显著不同：\n\n1. **针对的问题不同**：Patch matching方法旨在为**已对齐的图像**发现匹配的局部结构；而PAN方法专门针对**由检测错误（misdetection）引起的错位问题**进行解决[来源1]。\n2. **对误检情况的处理能力不同**：Patch matching方法通常假设匹配结构位于同一水平条带或方形邻域内，虽对位置、尺度等较小的空间方差具有鲁棒性，但当发生误检时，受限于搜索范围容易无法找到匹配结构，并带来部分错配的风险；PAN方法则能直接应对误检问题，通过同步完成图像内行人对齐与特征描述子学习，将解决误检与行人重识别结合，从而提升整体精度[来源1]。\n\n因此，两者所解决的核心问题本质不同，PAN方法被视作使用部分匹配（part matching）方法的有益补充步骤[来源1]。",
+      "scores": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.8722772469896559,
+        "context_precision": 0.99999999995
+      }
+    },
+    {
+      "question": "在PAN的仿射估计分支（affine estimation branch）中，接收了来自基础分支的哪两个输入张量？",
+      "answer": "根据参考资料，仿射估计分支接收的两个输入张量是来自基础分支的：尺寸为 14×14×1024 的 Res2 Feature Maps 和尺寸为 56×56×256 的 Res4 Feature Maps [来源1]。",
+      "scores": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.7244185018055015,
+        "context_precision": 0.9999999999
+      }
+    },
+    {
+      "question": "在测试阶段，PAN生成的行人描述符（pedestrian descriptor）是如何构成的？",
+      "answer": "根据参考资料，在测试阶段，PAN生成的行人描述符构成如下：\n\n1. 它是将两个尺寸为 `1×1×2048` 的全连接层（FC）嵌入向量进行拼接，从而形成一个 `4096` 维的行人描述符，用于后续的检索任务[来源1]。\n2. 从特征来源来看，该描述符是基础分支（base branch）和对齐分支（alignment branch）的全连接层（FC）特征的加权融合结果[来源2]。这种构成方式能够同时捕捉原始图像与对齐图像中的行人特征，且两者具有互补性，有助于提升行人重识别性能[来源2]。",
+      "scores": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.9181637638160266,
+        "context_precision": 0.9999999999
+      }
+    },
+    {
+      "question": "论文在哪些大规模行人重识别数据集上验证了PAN的性能？",
+      "answer": "根据现有参考资料，暂时无法回答该问题。（参考资料中仅提及实验是在“三个大规模行人重识别数据集”上进行的，但未提供具体的数据集名称。）",
+      "scores": {
+        "faithfulness": 0.6666666666666666,
+        "answer_relevancy": 0.0,
+        "context_precision": 0.0
+      }
+    },
+    {
+      "question": "实验结果表明，PAN中的两个分支（基础分支和对齐分支）具有什么特性？",
+      "answer": "根据参考资料，实验结果表明，PAN的基础分支和对齐分支具有以下特性：\n1. 两者提取的特征是**互补的**[来源1]。\n2. 将这两个分支的特征进行加权融合后，能够**提升行人重识别（person re-ID）的性能**[来源1]。\n3. 两个分支分别能够从**原始图像**和**对齐图像**中捕捉行人的特征[来源1]。",
+      "scores": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.850344102394522,
+        "context_precision": 0.9999999999
+      }
+    }
+  ],
+  "evaluated_at": "2026-08-26T09:01:59.511622"
+}

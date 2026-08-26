@@ -1,29 +1,23 @@
 # main.py
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from loader import load_documents
-from vector_store import get_vectorstore
+from vector_store import sync_vectorstore, get_vectorstore
 from qa_chain import create_qa_chain
 import uvicorn
 
 app = FastAPI(title="RAG Q&A Assistant")
 
-# 全局变量存储 QA 链，避免每次请求都重新加载模型
 qa_chain = None
 
 @app.on_event("startup")
 async def startup_event():
-    """启动时加载数据并初始化链"""
+    """启动时同步文档并初始化链"""
     global qa_chain
     print("系统启动中...")
-    
-    # 1. 加载并处理文档
-    docs = load_documents("docs")
-    
-    # 2. 构建向量库
-    get_vectorstore(documents=docs)
-    
-    # 3. 初始化问答链
+
+    # 增量同步：只处理新增/修改/删除的文档
+    sync_vectorstore("docs")
+
     qa_chain = create_qa_chain()
     print("系统就绪！")
 

@@ -13,6 +13,16 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 # 只要 requirements.txt 不变，这一层就不会重新构建
 COPY requirements.txt .
 
+# 优化点2.1: 配置 pip 使用阿里云镜像 + 超时重试
+RUN pip config set global.index-url https://mirrors.aliyun.com/pypi/simple/ \
+    && pip config set global.trusted-host mirrors.aliyun.com \
+    && pip config set global.timeout 300 \
+    && pip config set install.retries 10
+
+# 优化点2.2: 预装 CPU-only PyTorch (ragas 依赖，~200MB 而非 ~526MB)
+RUN pip install --no-cache-dir --prefix=/install \
+    torch --extra-index-url https://download.pytorch.org/whl/cpu
+
 RUN pip install --no-cache-dir --prefix=/install -r requirements.txt
 
 # ==========================================

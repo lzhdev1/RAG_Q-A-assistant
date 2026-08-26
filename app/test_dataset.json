@@ -1,0 +1,122 @@
+[
+  {
+    "question": "论文将现有的行人重识别（Re-ID）方法主要分为哪两种设置？",
+    "ground_truth": "根据五个步骤的不同，论文将现有的Re-ID方法分为封闭世界（closed-world）和开放世界（open-world）两种主要趋势。"
+  },
+  {
+    "question": "在封闭世界的行人重识别中，特征表示学习主要包含哪四种策略？",
+    "ground_truth": "特征表示学习的四种主要策略是：a) 全局特征 (Global Feature), b) 局部特征 (Local Feature), c) 辅助特征 (Auxiliary Feature), 和 d) 视频特征 (Video Feature)。"
+  },
+  {
+    "question": "论文中提到的用于行人重识别的三种广泛研究的损失函数是什么？",
+    "ground_truth": "三种广泛研究的损失函数是：身份损失 (Identity Loss), 验证损失 (Verification Loss), 和三元组损失 (Triplet Loss)。"
+  },
+  {
+    "question": "在评估行人重识别系统时，两个广泛使用的度量标准是什么？",
+    "ground_truth": "两个广泛使用的度量标准是累积匹配特征 (CMC) 和平均精度均值 (mAP)。"
+  },
+  {
+    "question": "开放世界（open-world）行人重识别主要包含哪五个方面的挑战？",
+    "ground_truth": "开放世界行人重识别包含的五个方面是：异构数据 (Heterogeneous Data)、从原始图像/视频中重识别 (Re-ID from Raw Images/Videos)、标签不可用/有限 (Unavailable/Limited Labels)、噪声标注 (Noisy Annotation) 和开放集 (Open-set) 问题。"
+  },
+  {
+    "question": "论文提出的新评估指标 mINP 代表什么，其目的是什么？",
+    "ground_truth": "mINP 代表平均逆负惩罚 (mean Inverse Negative Penalty)。其目的是衡量找到所有正确匹配项的成本，为评估行人重识别系统提供一个补充标准，尤其适用于真实应用场景。"
+  },
+  {
+    "question": "论文提出的新基线模型 AGW 的全称是什么？",
+    "ground_truth": "AGW 的全称是 Attention Generalized mean pooling with Weighted triplet loss。"
+  },
+  {
+    "question": "在“未充分研究的开放性问题”中，论文提到了哪五个方面？",
+    "ground_truth": "论文从五个方面讨论了开放性问题：不可控的数据收集 (Uncontrollable Data Collection)、最小化人工标注 (Human Annotation Minimization)、特定领域/可泛化的架构设计 (Domain-Specific/Generalizable Architecture Design)、动态模型更新 (Dynamic Model Updating) 和高效的模型部署 (Efficient Model Deployment)。"
+  },
+  {
+    "question": "针对“不可控的数据收集”问题，论文提到了哪两个具体的挑战？",
+    "ground_truth": "论文提到了两个具体的挑战：多异构数据 (Multi-Heterogeneous Data) 和换衣数据 (Cloth-Changing Data)。"
+  },
+  {
+    "question": "论文在结论部分提到，新提出的 AGW 基线在多少个数据集和任务上取得了有竞争力的性能？",
+    "ground_truth": "论文提到，AGW 基线在四个 Re-ID 任务的十二个数据集上取得了有竞争力的性能。"
+  },
+  {
+    "question": "视频行人重识别（Video-based ReID）系统由哪两个主要组件构成？",
+    "ground_truth": "视频行人重识别系统由两个主要组件构成：特征学习（feature learning）和度量学习（metric learning）。"
+  },
+  {
+    "question": "论文中提到的四个基准数据集（benchmark datasets）是什么？",
+    "ground_truth": "四个基准数据集是：MARS, DukeMTMC-VideoReID, PRID2011, 和 iLIDS-VID。"
+  },
+  {
+    "question": "在空间特征学习中，基于属性的方法（attribute-based approaches）将人的属性分为了哪六个组？",
+    "ground_truth": "这六个属性组是：性别（gender）、头部（head）、鞋子（shoes）、上身（upper body）、下身（lower body）和附件（attachments）。"
+  },
+  {
+    "question": "在基于动作的方法（action-based approaches）中，姿态（pose）估计可以分为哪两种方式？",
+    "ground_truth": "姿态估计可以分为粗略（coarsely）和精细（finely）两种方式。"
+  },
+  {
+    "question": "基于步态的方法（gait-based approaches）具有哪些重要特征？",
+    "ground_truth": "步态具有两个重要特征：它是独一无二的（unique），并且可以在任何距离进行测量（can be measured for any distance）。"
+  },
+  {
+    "question": "光流（optical flow）是如何定义的？",
+    "ground_truth": "光流定义了物体在序列中连续帧之间的运动，它由物体与相机之间的相对距离决定。"
+  },
+  {
+    "question": "深度度量学习（deep metric learning）技术通过优化什么来实现高重识别准确率？",
+    "ground_truth": "深度度量学习技术通过优化损失函数（loss function）来实现高重识别准确率。"
+  },
+  {
+    "question": "弱监督学习（weakly supervised learning）在视频行人重识别中是如何定义的？",
+    "ground_truth": "弱监督学习意味着在视频中识别人物身份，而无需对每个视频帧进行专门的标注。"
+  },
+  {
+    "question": "在讨论部分，论文认为视频行人重识别系统中的时间特征会带来哪两个副作用？",
+    "ground_truth": "时间特征会带来两个副作用：(1) 它们增加了额外的计算成本；(2) 它们由于冗余而提供了大量信息，可能会干扰系统。"
+  },
+  {
+    "question": "在“挑战与未来方向”部分，论文提到了哪两个与服装变化相关的挑战性问题？",
+    "ground_truth": "论文提到了两个问题：长期换衣问题（long-term cloth-changing problem）和制服区分问题（uniform discrimination problem）。"
+  },
+  {
+    "question": "论文指出，使用自动检测器获取行人图像时，通常会遇到哪两种检测错误？",
+    "ground_truth": "这两种检测错误是：过多的背景（excessive background）和部分缺失（part missing）。"
+  },
+  {
+    "question": "为解决对齐问题，论文提出的行人对齐网络（PAN）是如何利用注意力机制的？",
+    "ground_truth": "PAN利用这样的观察：当卷积神经网络学习区分不同身份时，学习到的特征图通常在人体上表现出强烈的激活，而不是在背景上。该网络利用这种注意力机制来自适应地定位和对齐边界框内的行人。"
+  },
+  {
+    "question": "PAN的训练过程由哪三个组件构成？",
+    "ground_truth": "PAN的训练过程由以下三个组件构成：1) 一个用于预测输入图像身份的网络，2) 一个用于重新定位输入图像的仿射变换，以及 3) 另一个用于预测重新定位后图像身份的网络。"
+  },
+  {
+    "question": "在PAN中，仿射参数（affine parameters）是如何被估计的？",
+    "ground_truth": "仿射参数是使用来自基础分支（base branch）的高层卷积层的特征图来估计的。"
+  },
+  {
+    "question": "论文中提到的空间变换网络（STN）在处理检测错误时起到了什么作用？",
+    "ground_truth": "STN可以裁剪可能包含过多背景的检测图像，或者为缺少部分的特征图边界填充零。"
+  },
+  {
+    "question": "论文提出的PAN方法与使用“patch matching”（补丁匹配）策略的方法有何显著不同？",
+    "ground_truth": "当发生错误检测时，由于搜索范围的限制，patch matching方法可能无法发现匹配的结构，并增加部分不匹配的风险。而PAN方法则能解决由检测错误引起的错位问题。"
+  },
+  {
+    "question": "在PAN的仿射估计分支（affine estimation branch）中，接收了来自基础分支的哪两个输入张量？",
+    "ground_truth": "仿射估计分支接收了来自基础分支的两个输入张量：Res2 Feature Maps 和 Res4 Feature Maps。"
+  },
+  {
+    "question": "在测试阶段，PAN生成的行人描述符（pedestrian descriptor）是如何构成的？",
+    "ground_truth": "在测试阶段，PAN将基础分支和对齐分支的两个FC层特征连接起来，形成一个4096维的行人描述符用于检索。"
+  },
+  {
+    "question": "论文在哪些大规模行人重识别数据集上验证了PAN的性能？",
+    "ground_truth": "论文在三个大规模行人重识别数据集上验证了PAN的性能，它们是：Market-1501、CUHK03-NP 和 DukeMTMC-reID。"
+  },
+  {
+    "question": "实验结果表明，PAN中的两个分支（基础分支和对齐分支）具有什么特性？",
+    "ground_truth": "实验结果表明，这两个分支是互补的（complementary），因此比单个分支包含更多有意义的信息。"
+  }
+]
