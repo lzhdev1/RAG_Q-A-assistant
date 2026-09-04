@@ -25,21 +25,20 @@
   a.chunk_size 500
   b.top_k 10 
   c.chunk_overlap 50
- 2.混合检索（Hybrid Search） faithfulness提升，context_precision、answer_relevancy降低近50%
- 3.Reranker 重排序 context_precision、answer_relevancy提升近100%
- =======================================================
-           RAG 系统评估结果 (RAGAS)
+ 2.混合检索（Hybrid Search） faithfulness提升，context_precision、answer_relevancy降低（和参数应该有关：chunk_size 300，top_k 3，chunk_overlap 50）
+ 3.Reranker 重排序 context_precision、answer_relevancy提升
 =======================================================
-
-  faithfulness           0.9219
-  answer_relevancy       0.6985
-  context_precision      0.7389
-
+  汇总统计
 =======================================================
+  faithfulness           均值=0.9219  标准差=0.1533   +18.8%
+  answer_relevancy       均值=0.6985  标准差=0.3536   +23.2% 
+  context_precision      均值=0.7389  标准差=0.3983   +19.8%
 
- 4. 查询改写（Query Rewriting）  
+ 4. 查询改写（Query Rewriting）浪费3到4倍token，提升不大 
  用 LLM 把用户问题改写成更适合检索的形式：
-  - HyDE：让 LLM 先生成一个"假设性答案"，用答案去检索
-  - 多查询扩展：把一个问题改写成多个版本，分别检索后合并
- 5.Parent-Child Chunking 检索时用小片段（精准匹配），返回时给 LLM 看大片段（完整上下文）。
- 6.Metadata Filtering 给文档加标签（如来源、日期、类别），检索时先过滤再搜索。
+=======================================================
+  汇总统计
+=======================================================
+  faithfulness           均值=0.9390  标准差=0.1468 
+  answer_relevancy       均值=0.6201  标准差=0.3763 
+  context_precision      均值=0.7639  标准差=0.3991 
