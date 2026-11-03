@@ -10,8 +10,8 @@ services:
     volumes:
       # 挂载本地目录到容器，实现代码热更新 + 数据持久化
       - ./backend:/app
-      - ./data/docs:/app/docs
-      - ./data/chroma_data:/app/chroma_data
+      - ./backend/data/docs:/app/docs
+      - ./backend/data/chroma_data:/app/chroma_data
     env_file:
       - ./backend/.env
     restart: unless-stopped

@@ -39,27 +39,21 @@ Qwen LLM 基于参考资料生成回答（防幻觉 Prompt）
 
 ```
 RAG_Q-A-assistant/
-├── backend/                    # 后端（FastAPI + RAG 链路）
-│   ├── main.py                 # FastAPI 入口：/ask /ask/stream /upload /documents /health
-│   ├── qa_chain.py             # RAG 问答链（三路混合检索 + HyDE + Reranker + Prompt）
-│   ├── vector_store.py         # ChromaDB 向量库（增量同步 + 连字归一化 + manifest + HNSW 落盘配置）
-│   ├── evaluate.py             # RAGAS 评估脚本
-│   ├── loader.py               # 文档加载器
-│   ├── test_dataset.json       # 30 条测试问答对
-│   ├── eval_results_v5/v6.json # 评估结果存档（v6 为当前权威）
-│   ├── .env                    # 环境变量配置（密钥，不入库）
+├── backend/                      # 后端（FastAPI + RAG 链路）
+│   ├── main.py                   # FastAPI 入口：/ask /ask/stream /upload /documents /health
+│   ├── qa_chain.py               # RAG 问答链（三路混合检索 + HyDE + Reranker + Prompt）
+│   ├── vector_store.py           # ChromaDB 向量库（增量同步 + 连字归一化 + manifest + HNSW 落盘配置）
+│   ├── evaluate.py               # RAGAS 评估脚本
+│   ├── loader.py                 # 文档加载器
+│   ├── test_dataset.json         # 30 条测试问答对
+│   ├── eval_results_v5/v6.json   # 评估结果存档（v6 为当前权威）
+│   ├── .env                      # 环境变量配置（密钥，不入库）
 │   ├── requirements.txt / Dockerfile / entrypoint.sh
-│   └── scripts/                # 证据脚本与测试脚本（HNSW 根因实验、HyDE 验证、稳定性测试、重建脚本）
-├── front/                      # 前端（Next.js）
-│   ├── app/page.tsx            # 聊天主界面（侧边栏会话 + 文档管理 + 消息流）
-│   ├── app/globals.css         # Open WebUI 风格深色主题样式
-│   ├── lib/api.ts              # 前端 API 客户端（SSE 解析 / 上传 / 文档管理）
-│   ├── next.config.js          # rewrites 服务端代理 /api/* → rag-app:8000
-│   └── Dockerfile              # 前端镜像（Next.js standalone）
-├── data/                       # 运行时数据（挂载卷）
-│   ├── docs/                   # 知识库文档（PDF/TXT/MD，可通过前端上传）
-│   └── chroma_data/            # ChromaDB 向量库（HNSW 落盘数据，不入库）
-├── docker-compose.yml          # 编排 rag-app + web
+│   ├── data/                     # 运行时数据（挂载卷）
+│   │   ├── docs/                 # 知识库文档（PDF/TXT/MD，可通过前端上传）
+│   │   └── chroma_data/          # ChromaDB 向量库（HNSW 落盘数据，不入库）
+│   └── scripts/                  # 证据脚本与测试脚本（HNSW 根因实验、HyDE 验证、稳定性测试、重建脚本）
+├── front/                        # 前端（Next.js）
 ├── ERROR_ANALYSIS.md           # 失败题归因 + 附录 A 四探针 + 附录 B HNSW 根因 + 附录 C HyDE
 ├── Record.md                   # 指标演进存档（基线 → v6）
 └── README.md
