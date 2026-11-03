@@ -31,9 +31,9 @@ function newMsgId(): string {
 
 // RAGAS 评测（最新 v6 · HyDE 配置，口径：30 题评估集，来源 docs/ERROR_ANALYSIS.md 附录 C，2026-11 存档）
 const RAGAS_METRICS = [
-  { key: '忠实性 F', value: '0.9542' },
-  { key: '答案相关 AR', value: '0.8490' },
-  { key: '上下文精度 CP', value: '0.9472' },
+  { key: '忠实性 F', value: 0.9542 },
+  { key: '答案相关 AR', value: 0.8490 },
+  { key: '上下文精度 CP', value: 0.9472 },
 ] as const
 
 export default function Home() {
@@ -329,7 +329,7 @@ export default function Home() {
 
         {/* ── RAGAS 评测 ── */}
         <div className="mx-3 mb-1 mt-3 rounded-lg border border-border-soft bg-surface-2 p-3">
-          <div className="mb-1.5 flex items-center justify-between">
+          <div className="mb-2 flex items-center justify-between">
             <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-content-3">
               RAGAS 评测
             </span>
@@ -337,13 +337,21 @@ export default function Home() {
               v6 · HyDE
             </span>
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-col gap-2">
             {RAGAS_METRICS.map((m) => (
-              <div key={m.key} className="flex-1 rounded-md bg-surface px-1 py-1.5 text-center">
-                <div className="text-[13px] font-semibold tabular-nums leading-tight text-content">
-                  {m.value}
+              <div key={m.key} className="flex items-center gap-2">
+                <span className="w-[88px] flex-shrink-0 text-[11px] leading-none text-content-2">
+                  {m.key}
+                </span>
+                <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-content-2/10">
+                  <div
+                    className="h-full rounded-full bg-gradient-to-r from-blue-400 to-blue-600"
+                    style={{ width: `${(m.value * 100).toFixed(2)}%` }}
+                  />
                 </div>
-                <div className="mt-0.5 text-[10px] leading-tight text-content-muted">{m.key}</div>
+                <span className="w-[52px] flex-shrink-0 text-right text-[11px] font-semibold tabular-nums leading-none text-content">
+                  {m.value.toFixed(2)}/1
+                </span>
               </div>
             ))}
           </div>
