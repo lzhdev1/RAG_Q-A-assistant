@@ -29,12 +29,6 @@ function newMsgId(): string {
   return `m_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`
 }
 
-const WELCOME_SUGGESTIONS = [
-  '在评估行人重识别系统时，两个广泛使用的度量标准是什么？',
-  '视频行人重识别系统由哪两个主要组件构成？',
-  '时间特征会带来哪两个副作用？',
-]
-
 // RAGAS 评测（最新 v6 · HyDE 配置，口径：30 题评估集，来源 docs/ERROR_ANALYSIS.md 附录 C，2026-11 存档）
 const RAGAS_METRICS = [
   { key: '忠实性 F', value: '0.9542' },
@@ -418,18 +412,6 @@ export default function Home() {
                 <h2 className="m-0 bg-gradient-to-r from-content via-content-2 to-content-muted bg-clip-text text-[22px] font-semibold tracking-[0.01em] text-transparent">
                   企业知识库问答助手
                 </h2>
-                <p className="m-0 text-[13px] text-content-3">基于混合检索 + Rerank + HyDE 的论文知识问答</p>
-                <div className="mt-5 flex w-full max-w-[420px] flex-col gap-2">
-                  {WELCOME_SUGGESTIONS.map((q) => (
-                    <button
-                      key={q}
-                      className="m-0 rounded-lg border border-border-strong px-3.5 py-2.5 text-left text-[13px] text-content-2 transition hover:border-border-strong hover:bg-content-2/10"
-                      onClick={() => handleSend(q)}
-                    >
-                      {q}
-                    </button>
-                  ))}
-                </div>
               </div>
             ) : (
               activeSession.messages.map((m) => (
