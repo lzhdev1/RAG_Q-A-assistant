@@ -276,8 +276,8 @@ export default function Home() {
       {/* ── 侧边栏 ── */}
       <aside className="flex w-[260px] min-w-[260px] flex-col border-r border-border-soft bg-surface-2 backdrop-blur-xl">
         <div className="flex items-center gap-2 border-b border-border-soft px-4 py-4 text-[15px] font-semibold tracking-wide text-content">
-          <span className="flex h-6 w-6 items-center justify-center rounded-md bg-gradient-to-br from-blue-400 to-blue-600 text-[13px] shadow-lg shadow-blue-500/20">
-            📚
+          <span className="flex h-6 w-6 items-center justify-center rounded-md bg-gradient-to-br from-blue-400 to-blue-600 text-white shadow-lg shadow-blue-500/20">
+            <LogoIcon size={14} />
           </span>
           <span className="flex-1">RAG Q&amp;A</span>
           <button
@@ -299,10 +299,11 @@ export default function Home() {
         </div>
 
         <button
-          className="mx-3 mb-1 mt-3 rounded-lg border border-border-strong px-3.5 py-2.5 text-left text-[13px] text-content transition hover:border-border-strong hover:bg-content-2/10"
+          className="mx-3 mb-1 mt-3 flex items-center gap-1.5 rounded-lg border border-border-strong px-3.5 py-2.5 text-left text-[13px] text-content transition hover:border-border-strong hover:bg-content-2/10"
           onClick={startNewChat}
         >
-          ＋ 新建对话
+          <PlusIcon size={13} />
+          新建对话
         </button>
 
         <div className="flex-1 overflow-y-auto px-3 py-1">
@@ -312,14 +313,15 @@ export default function Home() {
           {sessions.map((s) => (
             <div
               key={s.id}
-              className={`mb-0.5 cursor-pointer truncate rounded-lg px-3 py-2 text-[13px] transition ${
+              className={`mb-0.5 flex cursor-pointer items-center gap-1.5 rounded-lg px-3 py-2 text-[13px] transition ${
                 s.id === activeId
                   ? 'bg-content-2/15 text-content shadow-sm'
                   : 'text-content-2 hover:bg-content-2/10 hover:text-content'
               }`}
               onClick={() => switchSession(s.id)}
             >
-              💬 {s.title}
+              <ChatIcon size={13} />
+              <span className="truncate">{s.title}</span>
             </div>
           ))}
         </div>
@@ -343,10 +345,11 @@ export default function Home() {
               }}
             />
             <button
-              className="flex-shrink-0 rounded-md bg-blue-500/90 px-3.5 py-1.5 text-xs font-semibold text-white shadow-md shadow-blue-500/20 transition hover:bg-blue-500"
+              className="flex flex-shrink-0 items-center gap-1.5 rounded-md bg-blue-500/90 px-3.5 py-1.5 text-xs font-semibold text-white shadow-md shadow-blue-500/20 transition hover:bg-blue-500"
               onClick={() => fileInputRef.current?.click()}
             >
-              ＋ 上传文档
+              <UploadIcon size={13} />
+              上传文档
             </button>
           </div>
 
@@ -357,22 +360,21 @@ export default function Home() {
           {docs.length === 0 && <div className="text-[11px] text-content-muted">知识库暂无文档</div>}
           {docs.map((d) => (
             <div key={d.name} className="flex items-center justify-between gap-2 text-xs text-content-2">
-              <span className="flex-1 truncate" title={`${(d.size / 1024).toFixed(1)} KB`}>
-                📄 {d.name}
+              <span className="flex min-w-0 flex-1 items-center gap-1.5 truncate" title={`${(d.size / 1024).toFixed(1)} KB`}>
+                <DocIcon size={13} />
+                <span className="truncate">{d.name}</span>
               </span>
               <button
-                className="rounded px-1.5 py-0.5 text-[13px] text-content-muted transition hover:bg-content-2/10 hover:text-red-400"
+                className="flex flex-shrink-0 items-center justify-center rounded px-1.5 py-0.5 text-content-muted transition hover:bg-content-2/10 hover:text-red-400"
                 title="删除"
                 onClick={() => handleDeleteDoc(d.name)}
               >
-                ✕
+                <CloseIcon size={13} />
               </button>
             </div>
           ))}
         </div>
       </aside>
-
-      {/* ── 主聊天区 ── */}
       <main className={`relative flex flex-1 flex-col overflow-hidden ${isEmpty ? 'justify-center' : ''}`}>
         {/* 背景光晕 */}
         <div
@@ -487,5 +489,76 @@ export default function Home() {
         </div>
       </main>
     </div>
+  )
+}
+
+/* ── 极简线性图标集（1.8px 描边，currentColor 跟随主题） ── */
+const iconProps = {
+  fill: 'none',
+  stroke: 'currentColor',
+  strokeWidth: 1.8,
+  strokeLinecap: 'round' as const,
+  strokeLinejoin: 'round' as const,
+}
+
+/** 打开的书（知识库 Logo） */
+function LogoIcon({ size = 14 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" {...iconProps}>
+      <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+      <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+    </svg>
+  )
+}
+
+/** 聊天气泡（会话条目） */
+function ChatIcon({ size = 13 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" {...iconProps}>
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+    </svg>
+  )
+}
+
+/** 文档（知识库条目） */
+function DocIcon({ size = 13 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" {...iconProps}>
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+      <path d="M14 2v6h6" />
+      <path d="M16 13H8" />
+      <path d="M16 17H8" />
+    </svg>
+  )
+}
+
+/** 关闭（删除） */
+function CloseIcon({ size = 13 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" {...iconProps}>
+      <path d="M18 6L6 18" />
+      <path d="M6 6l12 12" />
+    </svg>
+  )
+}
+
+/** 加号（新建对话） */
+function PlusIcon({ size = 13 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" {...iconProps}>
+      <path d="M12 5v14" />
+      <path d="M5 12h14" />
+    </svg>
+  )
+}
+
+/** 上传（上传文档） */
+function UploadIcon({ size = 13 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" {...iconProps}>
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+      <path d="M17 8l-5-5-5 5" />
+      <path d="M12 3v12" />
+    </svg>
   )
 }
