@@ -404,7 +404,7 @@ export default function Home() {
               activeSession.messages.map((m) => (
                 <div
                   key={m.id}
-                  className={`msg-in mb-6 flex gap-3 ${m.role === 'user' ? 'justify-end' : ''}`}
+                  className={`msg-in mb-6 flex gap-3 ${m.role === 'user' ? 'flex-row-reverse' : ''}`}
                 >
                   <div
                     className={`flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg text-xs font-bold tracking-wide ${
