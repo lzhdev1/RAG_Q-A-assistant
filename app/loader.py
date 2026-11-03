@@ -1,5 +1,6 @@
 from langchain_community.document_loaders import DirectoryLoader, PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
+from vector_store import normalize_text
 import os
 
 
@@ -24,6 +25,10 @@ def load_documents(docs_dir="docs"):
     documents = loader.load()
 
     print(f"成功加载 {len(documents)} 个 PDF 页面")
+
+    # 连字归一化：展开 afﬁne→affine 等，保证 BM25 关键词能命中
+    for doc in documents:
+        doc.page_content = normalize_text(doc.page_content)
 
 
     # 文本切片

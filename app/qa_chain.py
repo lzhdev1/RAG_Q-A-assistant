@@ -7,10 +7,16 @@ from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_core.retrievers import BaseRetriever
 from langchain_core.documents import Document
-from vector_store import get_vectorstore
+from vector_store import get_vectorstore, normalize_text
+from typing import Any
 import os
 import glob
 import httpx
+
+
+# ── 开关（环境变量可覆盖，便于 A/B 对照） ─────────────────────────
+ENABLE_HYDE = os.getenv("ENABLE_HYDE", "1") == "1"  # HyDE 假设文档检索
+ENABLE_QUERY_REWRITE = os.getenv("ENABLE_QUERY_REWRITE", "0") == "1"  # 查询改写（历史负收益，默认关）
 
 
 # ── 查询改写 Prompt ──────────────────────────────────────────────
@@ -25,6 +31,22 @@ REWRITE_PROMPT = PromptTemplate(
 示例格式：["改写1", "改写2", "改写3"]
 
 改写版本：""",
+)
+
+
+# ── HyDE Prompt（假设文档生成） ───────────────────────────────────
+HYDE_PROMPT = PromptTemplate(
+    input_variables=["question"],
+    template="""请根据以下问题，撰写一段假设性的文档摘录（hypothetical passage）。
+
+要求：
+1. 内容直接陈述该问题的答案，像从学术论文正文摘录的段落；不要出现"根据文献""我查找了""论文指出"等元描述。
+2. 尽量包含关键术语、专有名词、缩写、数据集名称等具体信息（问题涉及时）。
+3. 控制在 150 字以内，用陈述性语言写成连贯段落。
+
+问题：{question}
+
+假设性文档摘录：""",
 )
 
 
@@ -70,22 +92,64 @@ CUSTOM_PROMPT = PromptTemplate(
 
 
 def _load_and_chunk_docs(docs_dir="docs"):
-    """加载并切分文档，用于 BM25 检索器"""
+    """加载并切分文档，用于 BM25 检索器（支持 PDF/TXT/MD）"""
     all_chunks = []
     splitter = RecursiveCharacterTextSplitter(
-        chunk_size=500,
-        chunk_overlap=50,
+        chunk_size=800,
+        chunk_overlap=100,
         separators=["\n\n", "\n", " ", ""],
     )
 
-    pdf_files = glob.glob(os.path.join(docs_dir, "*.pdf"))
-    for pdf_path in pdf_files:
-        loader = PyPDFLoader(pdf_path)
-        pages = loader.load()
+    from vector_store import _is_supported
+    for name in sorted(os.listdir(docs_dir)):
+        if not _is_supported(name):
+            continue
+        path = os.path.join(docs_dir, name)
+        ext = os.path.splitext(name)[1].lower()
+        if ext == ".pdf":
+            loader = PyPDFLoader(path)
+            pages = loader.load()
+        else:  # .txt / .md
+            with open(path, "r", encoding="utf-8", errors="ignore") as f:
+                text = f.read()
+            pages = [Document(page_content=text, metadata={"source": path, "page": 0})]
+        # 连字归一化：展开 afﬁne→affine 等，保证 BM25 关键词能命中
+        for page in pages:
+            page.page_content = normalize_text(page.page_content)
         chunks = splitter.split_documents(pages)
         all_chunks.extend(chunks)
 
     return all_chunks
+
+
+class HyDEVectorRetriever(BaseRetriever):
+    """
+    HyDE（Hypothetical Document Embeddings）检索器（NeurIPS 2022, Gao et al.）：
+      查询 → LLM 生成一段"假设性文档摘录"（含实体词/数据集名） → 用假设文档做向量检索。
+    解决"查询里没有实体词、语义距离远"导致的召回漏（如 Q29：问题不含 Market-1501 等数据集名）。
+    代价：每次查询多 1 次 LLM 调用（远低于 Rerank 翻倍的账单）。
+    """
+    vectorstore: Any
+    llm: ChatOpenAI
+    k: int = 10
+    enabled: bool = True
+
+    class Config:
+        arbitrary_types_allowed = True
+
+    def _get_relevant_documents(self, query: str, *, run_manager):
+        # 关闭时回退：直接用原始查询做向量检索
+        if not self.enabled:
+            return self.vectorstore.similarity_search(query, k=self.k)
+        try:
+            response = self.llm.invoke(HYDE_PROMPT.format(question=query))
+            hyde_doc = response.content
+            print(f"  HyDE 假设文档: {hyde_doc[:120]}...")
+            # 关键：用假设文档（而非原始查询）做向量检索
+            return self.vectorstore.similarity_search(hyde_doc, k=self.k)
+        except Exception as e:
+            print(f"  HyDE 生成失败，回退原始查询: {e}")
+            return self.vectorstore.similarity_search(query, k=self.k)
 
 
 class DashScopeRerankerRetriever(BaseRetriever):
@@ -165,23 +229,33 @@ class DashScopeRerankerRetriever(BaseRetriever):
         return candidates[:self.top_k]
 
 
-def create_qa_chain():
+def build_rag_components():
     """
-    创建问答链（混合检索 + 查询改写 + Reranker）
+    构建 RAG 核心组件：LLM + Reranker 检索器（混合检索 + 精排）。
+    返回 (llm, reranker_retriever)，供同步问答链与 SSE 流式接口复用。
     """
 
-    # 1. 初始化 LLM（查询改写需要）
+    # 1. 初始化 LLM
     llm = ChatOpenAI(
         model=os.getenv("LLM_MODEL"),
         api_key=os.getenv("OPENAI_API_KEY"),
         base_url=os.getenv("LLM_BASE_URL"),
         temperature=0,
+        extra_body={"enable_thinking": False},
     )
 
-    # 2. 向量检索器（召回 top-10 供 reranker 筛选）
+    # 2. 向量检索器（原始查询召回 top-10）
     vectorstore = get_vectorstore()
     vector_retriever = vectorstore.as_retriever(
         search_kwargs={"k": 10}
+    )
+
+    # 2b. HyDE 向量检索器（LLM 生成假设文档后召回 top-10，三路混合中的语义增强路）
+    hyde_retriever = HyDEVectorRetriever(
+        vectorstore=vectorstore,
+        llm=llm,
+        k=10,
+        enabled=ENABLE_HYDE,
     )
 
     # 3. BM25 关键词检索器（召回 top-10）
@@ -191,21 +265,30 @@ def create_qa_chain():
         k=10,
     )
 
-    # 4. 混合检索器（BM25 + 向量）
+    # 4. 三路混合检索器（BM25 词面 + 原始向量语义 + HyDE 假设文档语义）
     ensemble_retriever = EnsembleRetriever(
-        retrievers=[bm25_retriever, vector_retriever],
-        weights=[0.5, 0.5],
+        retrievers=[bm25_retriever, vector_retriever, hyde_retriever],
+        weights=[0.4, 0.3, 0.3],
     )
 
-    # 5. Reranker 重排序（DashScope API，返回 top-3）
+    # 5. Reranker 重排序（DashScope API，返回 top-3；打分用原始查询）
     reranker_retriever = DashScopeRerankerRetriever(
         inner_retriever=ensemble_retriever,
         llm=llm,
         top_k=3,
-        enable_query_rewrite=False,
+        enable_query_rewrite=ENABLE_QUERY_REWRITE,
     )
 
-    # 6. 创建 RAG Chain
+    return llm, reranker_retriever
+
+
+def create_qa_chain():
+    """
+    创建问答链（混合检索 + 查询改写 + Reranker）
+    """
+    llm, reranker_retriever = build_rag_components()
+
+    # 创建 RAG Chain
     qa_chain = RetrievalQA.from_chain_type(
         llm=llm,
         chain_type="stuff",

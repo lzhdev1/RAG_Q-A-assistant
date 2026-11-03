@@ -1,0 +1,1271 @@
+[
+  {
+    "idx": 1,
+    "question": "论文将现有的行人重识别（Re-ID）方法主要分为哪两种设置？",
+    "scores": {
+      "AR": 0.8316,
+      "CP": 1.0,
+      "F": 1.0
+    },
+    "probes": {
+      "anchors": [
+        "closed-world",
+        "open-world",
+        "re-id"
+      ],
+      "p1_original": true,
+      "p1_hits_per_doc": {
+        "Deep Learning for Person Re-identification A Survey and Outlook.pdf": 485,
+        "Deep Video-based Person Re-identification (Deep Vid-ReID) Comprehensive Survey.pdf": 29,
+        "Pedestrian Alignment Network for Large-scale Person Re-Identification.pdf": 80
+      }
+    },
+    "label": "OK"
+  },
+  {
+    "idx": 2,
+    "question": "在封闭世界的行人重识别中，特征表示学习主要包含哪四种策略？",
+    "scores": {
+      "AR": 0,
+      "CP": 1.0,
+      "F": 1.0
+    },
+    "probes": {
+      "anchors": [
+        "auxiliary",
+        "auxiliary feature",
+        "global",
+        "global feature",
+        "local",
+        "local feature"
+      ],
+      "p1_original": true,
+      "p1_hits_per_doc": {
+        "Deep Learning for Person Re-identification A Survey and Outlook.pdf": 105,
+        "Deep Video-based Person Re-identification (Deep Vid-ReID) Comprehensive Survey.pdf": 71,
+        "Pedestrian Alignment Network for Large-scale Person Re-Identification.pdf": 25
+      },
+      "p2": {
+        "bm25_best": {
+          "dice": 0.0,
+          "kw_hit": 1,
+          "content": "identification,” in CVPR , 2019, pp. 598–607.\n[107] B. N. Xia, Y. Gong, Y. Zhang, and C. Poellabauer, “Second-\norder non-local attention networks for person re-identification,”\ninICCV , 2019, pp. 3760",
+          "idx": 6
+        },
+        "vector_best": {
+          "dice": 0.0,
+          "kw_hit": 4,
+          "content": "2.1 Feature Representation Learning\nWe firstly discuss the feature learning strategies in closed-\nworld person Re-ID. There are four main categories (as\nshown in Fig. 2): a) Global Feature (§ 2.1.1), ",
+          "idx": 0
+        }
+      },
+      "p3": {
+        "best": {
+          "dice": 0.0,
+          "kw_hit": 4,
+          "content": "2.1 Feature Representation Learning\nWe firstly discuss the feature learning strategies in closed-\nworld person Re-ID. There are four main categories (as\nshown in Fig. 2): a) Global Feature (§ 2.1.1), ",
+          "idx": 0
+        },
+        "top3": [
+          {
+            "idx": 0,
+            "dice": 0.0,
+            "kw_hit": 4,
+            "head": "2.1 Feature Representation Learning We firstly dis"
+          },
+          {
+            "idx": 1,
+            "dice": 0.0,
+            "kw_hit": 0,
+            "head": "a multi-scale deep representation learning model t"
+          },
+          {
+            "idx": 2,
+            "dice": 0.0,
+            "kw_hit": 0,
+            "head": "IEEE TRANSACTIONS ON PATTERN ANAL YSIS AND MACHINE"
+          }
+        ]
+      },
+      "p4_ran": false
+    },
+    "label": "边界案例(需人工复核)"
+  },
+  {
+    "idx": 3,
+    "question": "论文中提到的用于行人重识别的三种广泛研究的损失函数是什么？",
+    "scores": {
+      "AR": 0.8136,
+      "CP": 1.0,
+      "F": 1.0
+    },
+    "probes": {
+      "anchors": [
+        "identity",
+        "identity loss",
+        "triplet",
+        "triplet loss",
+        "verification",
+        "verification loss"
+      ],
+      "p1_original": true,
+      "p1_hits_per_doc": {
+        "Deep Learning for Person Re-identification A Survey and Outlook.pdf": 132,
+        "Deep Video-based Person Re-identification (Deep Vid-ReID) Comprehensive Survey.pdf": 41,
+        "Pedestrian Alignment Network for Large-scale Person Re-Identification.pdf": 14
+      }
+    },
+    "label": "OK"
+  },
+  {
+    "idx": 4,
+    "question": "在评估行人重识别系统时，两个广泛使用的度量标准是什么？",
+    "scores": {
+      "AR": 0.5707,
+      "CP": 1.0,
+      "F": 1.0
+    },
+    "probes": {
+      "anchors": [
+        "cmc",
+        "map"
+      ],
+      "p1_original": true,
+      "p1_hits_per_doc": {
+        "Deep Learning for Person Re-identification A Survey and Outlook.pdf": 85,
+        "Deep Video-based Person Re-identification (Deep Vid-ReID) Comprehensive Survey.pdf": 25,
+        "Pedestrian Alignment Network for Large-scale Person Re-Identification.pdf": 47
+      },
+      "p2": {
+        "bm25_best": {
+          "dice": 0.0,
+          "kw_hit": 0,
+          "content": "",
+          "idx": -1
+        },
+        "vector_best": {
+          "dice": 0.0,
+          "kw_hit": 2,
+          "content": "also introduces additional challenges for model generaliz-\nability in a dynamically updated network. 3) The bounding\nboxes generation is usually performed automatically de-\ntected/tracked, rather than",
+          "idx": 1
+        }
+      },
+      "p3": {
+        "best": {
+          "dice": 0.0,
+          "kw_hit": 2,
+          "content": "also introduces additional challenges for model generaliz-\nability in a dynamically updated network. 3) The bounding\nboxes generation is usually performed automatically de-\ntected/tracked, rather than",
+          "idx": 0
+        },
+        "top3": [
+          {
+            "idx": 0,
+            "dice": 0.0,
+            "kw_hit": 2,
+            "head": "also introduces additional challenges for model ge"
+          },
+          {
+            "idx": 1,
+            "dice": 0.0,
+            "kw_hit": 0,
+            "head": "at least comparable performance on twelve datasets"
+          },
+          {
+            "idx": 2,
+            "dice": 0.0,
+            "kw_hit": 0,
+            "head": "Re-identification (PA-HPAReid), are proposed by Hu"
+          }
+        ]
+      },
+      "p4_ran": false
+    },
+    "label": "召回问题(BM25侧)"
+  },
+  {
+    "idx": 5,
+    "question": "开放世界（open-world）行人重识别主要包含哪五个方面的挑战？",
+    "scores": {
+      "AR": 0.879,
+      "CP": 0.8333,
+      "F": 1.0
+    },
+    "probes": {
+      "anchors": [
+        "annotation",
+        "from",
+        "heterogeneous",
+        "heterogeneous data",
+        "images/videos",
+        "labels",
+        "limited labels",
+        "noisy",
+        "noisy annotation",
+        "open-set",
+        "open-world",
+        "raw",
+        "re-id",
+        "re-id from raw images",
+        "unavailable/limited"
+      ],
+      "p1_original": true,
+      "p1_hits_per_doc": {
+        "Deep Learning for Person Re-identification A Survey and Outlook.pdf": 644,
+        "Deep Video-based Person Re-identification (Deep Vid-ReID) Comprehensive Survey.pdf": 122,
+        "Pedestrian Alignment Network for Large-scale Person Re-Identification.pdf": 133
+      }
+    },
+    "label": "OK"
+  },
+  {
+    "idx": 6,
+    "question": "论文提出的新评估指标 mINP 代表什么，其目的是什么？",
+    "scores": {
+      "AR": 0.8039,
+      "CP": 1.0,
+      "F": 0.8
+    },
+    "probes": {
+      "anchors": [
+        "inverse",
+        "mean",
+        "mean inverse negative penalty",
+        "negative",
+        "penalty"
+      ],
+      "p1_original": true,
+      "p1_hits_per_doc": {
+        "Deep Learning for Person Re-identification A Survey and Outlook.pdf": 62,
+        "Deep Video-based Person Re-identification (Deep Vid-ReID) Comprehensive Survey.pdf": 9,
+        "Pedestrian Alignment Network for Large-scale Person Re-Identification.pdf": 1
+      }
+    },
+    "label": "OK"
+  },
+  {
+    "idx": 7,
+    "question": "论文提出的新基线模型 AGW 的全称是什么？",
+    "scores": {
+      "AR": 0,
+      "CP": 0,
+      "F": 1.0
+    },
+    "probes": {
+      "anchors": [
+        "agw",
+        "attention generalized mean pooling with",
+        "weighted triplet loss"
+      ],
+      "p1_original": true,
+      "p1_hits_per_doc": {
+        "Deep Learning for Person Re-identification A Survey and Outlook.pdf": 62,
+        "Deep Video-based Person Re-identification (Deep Vid-ReID) Comprehensive Survey.pdf": 0,
+        "Pedestrian Alignment Network for Large-scale Person Re-Identification.pdf": 0
+      },
+      "p2": {
+        "bm25_best": {
+          "dice": 0.0,
+          "kw_hit": 1,
+          "content": "level feature, our AGW baseline achieves competitive results\non two large-scale video Re-ID dataset, MARS and DukeV-\nideo. Besides, AGW baseline also performs significantly bet-\nter than BagTricks [12",
+          "idx": 0
+        },
+        "vector_best": {
+          "dice": 0.0,
+          "kw_hit": 1,
+          "content": "changes to the backbone structure and training strategy\nof single-modality image-based Re-ID model. The video-\nbased AGW baseline takes a video sequence as input and\nextracts the frame-level feature v",
+          "idx": 0
+        }
+      },
+      "p3": {
+        "best": {
+          "dice": 0.0,
+          "kw_hit": 1,
+          "content": "compared to small galleries. But it still can reflect the relative\nperformance of a Re-ID model, providing a supplement to\nthe widely-used CMC and mAP metrics.\n4.2 A New Baseline for Single-/Cross-Mod",
+          "idx": 0
+        },
+        "top3": [
+          {
+            "idx": 0,
+            "dice": 0.0,
+            "kw_hit": 1,
+            "head": "compared to small galleries. But it still can refl"
+          },
+          {
+            "idx": 1,
+            "dice": 0.0,
+            "kw_hit": 1,
+            "head": "100 epochs. To form an input video sequence, we ad"
+          },
+          {
+            "idx": 2,
+            "dice": 0.0,
+            "kw_hit": 1,
+            "head": "new baseline will provide a good guidance to boost"
+          }
+        ]
+      },
+      "p4_ran": false
+    },
+    "label": "边界案例(需人工复核)"
+  },
+  {
+    "idx": 8,
+    "question": "在“未充分研究的开放性问题”中，论文提到了哪五个方面？",
+    "scores": {
+      "AR": 0.7462,
+      "CP": 1.0,
+      "F": 1.0
+    },
+    "probes": {
+      "anchors": [
+        "annotation",
+        "architecture",
+        "collection",
+        "deployment",
+        "design",
+        "domain-",
+        "domain-specific/generalizable",
+        "dynamic",
+        "dynamic model updating",
+        "efficient",
+        "efficient model deployment",
+        "generalizable architecture design",
+        "human",
+        "human annotation minimization",
+        "minimization",
+        "uncontrollable",
+        "uncontrollable data collection",
+        "updating"
+      ],
+      "p1_original": true,
+      "p1_hits_per_doc": {
+        "Deep Learning for Person Re-identification A Survey and Outlook.pdf": 236,
+        "Deep Video-based Person Re-identification (Deep Vid-ReID) Comprehensive Survey.pdf": 42,
+        "Pedestrian Alignment Network for Large-scale Person Re-Identification.pdf": 17
+      }
+    },
+    "label": "OK"
+  },
+  {
+    "idx": 9,
+    "question": "针对“不可控的数据收集”问题，论文提到了哪两个具体的挑战？",
+    "scores": {
+      "AR": 0,
+      "CP": 0,
+      "F": 1.0
+    },
+    "probes": {
+      "anchors": [
+        "cloth-",
+        "cloth-changing",
+        "cloth-changing data",
+        "multi-",
+        "multi-heterogeneous",
+        "multi-heterogeneous data"
+      ],
+      "p1_original": true,
+      "p1_hits_per_doc": {
+        "Deep Learning for Person Re-identification A Survey and Outlook.pdf": 68,
+        "Deep Video-based Person Re-identification (Deep Vid-ReID) Comprehensive Survey.pdf": 22,
+        "Pedestrian Alignment Network for Large-scale Person Re-Identification.pdf": 8
+      },
+      "p2": {
+        "bm25_best": {
+          "dice": 0.0,
+          "kw_hit": 1,
+          "content": "identification,” in CVPR , 2018, pp. 2275–2284.\n[112] X. Chang, T. M. Hospedales, and T. Xiang, “Multi-level factori-\nsation net for person re-identification,” in CVPR , 2018, pp. 2109–\n2118.\n[113] F.",
+          "idx": 4
+        },
+        "vector_best": {
+          "dice": 0.0,
+          "kw_hit": 2,
+          "content": "identifying a person despite appearance variations due to cloth-changing. To discuss \nthis issue, it is required to record videos for days and months under the probability of \na person’s clothes chang",
+          "idx": 3
+        }
+      },
+      "p3": {
+        "best": {
+          "dice": 0.0,
+          "kw_hit": 0,
+          "content": "",
+          "idx": -1
+        },
+        "top3": [
+          {
+            "idx": 0,
+            "dice": 0.0,
+            "kw_hit": 0,
+            "head": "4.3 Under-Investigated Open Issues We discuss the "
+          },
+          {
+            "idx": 1,
+            "dice": 0.0,
+            "kw_hit": 0,
+            "head": "R1 accuracy and 87.0% on DukeMTMC-VideoReID. Lin e"
+          },
+          {
+            "idx": 2,
+            "dice": 0.0,
+            "kw_hit": 0,
+            "head": "Research Asia, Singapore. Email: stevenhoi@gmail.c"
+          }
+        ]
+      },
+      "p4": {
+        "answer": "根据提供的参考资料，文中**并未提及**针对“不可控的数据收集”问题所提到的两个具体挑战。\n\n提供的资料主要包含以下内容：\n1.  **表格数据**：Table 5 和 Table 6 展示了 AGW 方法在 CUHK03、MSMT17（图像 Re-ID）以及 MARS、Duke-Video、PRID2011、iLIDS-VID（视频 Re-ID）数据集上与 BagTricks、CoSeg 等最先",
+        "verdict": {
+          "covered": false,
+          "reason": "模型回答声称资料未提及相关挑战，而参考答案明确指出了多异构数据和换衣数据两个具体挑战，两者结论完全相反。"
+        }
+      },
+      "p4_ran": true
+    },
+    "label": "排序问题(Rerank未保留)"
+  },
+  {
+    "idx": 10,
+    "question": "论文在结论部分提到，新提出的 AGW 基线在多少个数据集和任务上取得了有竞争力的性能？",
+    "scores": {
+      "AR": 0.8126,
+      "CP": 1.0,
+      "F": 1.0
+    },
+    "probes": {
+      "anchors": [
+        "agw",
+        "re-id"
+      ],
+      "p1_original": true,
+      "p1_hits_per_doc": {
+        "Deep Learning for Person Re-identification A Survey and Outlook.pdf": 496,
+        "Deep Video-based Person Re-identification (Deep Vid-ReID) Comprehensive Survey.pdf": 27,
+        "Pedestrian Alignment Network for Large-scale Person Re-Identification.pdf": 80
+      }
+    },
+    "label": "OK"
+  },
+  {
+    "idx": 11,
+    "question": "视频行人重识别（Video-based ReID）系统由哪两个主要组件构成？",
+    "scores": {
+      "AR": 0.8602,
+      "CP": 1.0,
+      "F": 1.0
+    },
+    "probes": {
+      "anchors": [
+        "metric",
+        "metric learning",
+        "reid",
+        "video-based",
+        "video-based reid"
+      ],
+      "p1_original": true,
+      "p1_hits_per_doc": {
+        "Deep Learning for Person Re-identification A Survey and Outlook.pdf": 134,
+        "Deep Video-based Person Re-identification (Deep Vid-ReID) Comprehensive Survey.pdf": 379,
+        "Pedestrian Alignment Network for Large-scale Person Re-Identification.pdf": 27
+      }
+    },
+    "label": "OK"
+  },
+  {
+    "idx": 12,
+    "question": "论文中提到的四个基准数据集（benchmark datasets）是什么？",
+    "scores": {
+      "AR": 0.8894,
+      "CP": 1.0,
+      "F": 1.0
+    },
+    "probes": {
+      "anchors": [
+        "benchmark",
+        "benchmark datasets",
+        "datasets",
+        "dukemtmc-",
+        "mars",
+        "prid2011",
+        "vid",
+        "videoreid"
+      ],
+      "p1_original": true,
+      "p1_hits_per_doc": {
+        "Deep Learning for Person Re-identification A Survey and Outlook.pdf": 269,
+        "Deep Video-based Person Re-identification (Deep Vid-ReID) Comprehensive Survey.pdf": 767,
+        "Pedestrian Alignment Network for Large-scale Person Re-Identification.pdf": 43
+      }
+    },
+    "label": "OK"
+  },
+  {
+    "idx": 13,
+    "question": "在空间特征学习中，基于属性的方法（attribute-based approaches）将人的属性分为了哪六个组？",
+    "scores": {
+      "AR": 0.9006,
+      "CP": 1.0,
+      "F": 1.0
+    },
+    "probes": {
+      "anchors": [
+        "attachments",
+        "attribute-based",
+        "attribute-based approaches",
+        "body",
+        "gender",
+        "head",
+        "lower",
+        "lower body",
+        "shoes",
+        "upper",
+        "upper body"
+      ],
+      "p1_original": true,
+      "p1_hits_per_doc": {
+        "Deep Learning for Person Re-identification A Survey and Outlook.pdf": 27,
+        "Deep Video-based Person Re-identification (Deep Vid-ReID) Comprehensive Survey.pdf": 64,
+        "Pedestrian Alignment Network for Large-scale Person Re-Identification.pdf": 9
+      }
+    },
+    "label": "OK"
+  },
+  {
+    "idx": 14,
+    "question": "在基于动作的方法（action-based approaches）中，姿态（pose）估计可以分为哪两种方式？",
+    "scores": {
+      "AR": 0.7549,
+      "CP": 0.5,
+      "F": 1.0
+    },
+    "probes": {
+      "anchors": [
+        "action-based",
+        "action-based approaches",
+        "coarsely",
+        "finely",
+        "pose"
+      ],
+      "p1_original": true,
+      "p1_hits_per_doc": {
+        "Deep Learning for Person Re-identification A Survey and Outlook.pdf": 57,
+        "Deep Video-based Person Re-identification (Deep Vid-ReID) Comprehensive Survey.pdf": 161,
+        "Pedestrian Alignment Network for Large-scale Person Re-Identification.pdf": 33
+      },
+      "p2": {
+        "bm25_best": {
+          "dice": 0.0,
+          "kw_hit": 1,
+          "content": "identification,” in AAAI , 2020.\n[115] J. Lin, L. Ren, J. Lu, J. Feng, and J. Zhou, “Consistent-aware deep\nlearning for person re-identification in a camera network,” in\nCVPR , 2017, pp. 5771–5780.\n[1",
+          "idx": 3
+        },
+        "vector_best": {
+          "dice": 0.0,
+          "kw_hit": 3,
+          "content": "temporal guidance. It is recommended in the future researches to propose an experi -\nment that constructs 2D, and 3D graph maps then learn the appearance features over \nthem. The appearance-based appr",
+          "idx": 0
+        }
+      },
+      "p3": {
+        "best": {
+          "dice": 0.0,
+          "kw_hit": 3,
+          "content": "temporal guidance. It is recommended in the future researches to propose an experi -\nment that constructs 2D, and 3D graph maps then learn the appearance features over \nthem. The appearance-based appr",
+          "idx": 0
+        },
+        "top3": [
+          {
+            "idx": 0,
+            "dice": 0.0,
+            "kw_hit": 3,
+            "head": "temporal guidance. It is recommended in the future"
+          },
+          {
+            "idx": 1,
+            "dice": 0.0,
+            "kw_hit": 3,
+            "head": "Page 15 of 43  Saad et al. EURASIP Journal on Adva"
+          },
+          {
+            "idx": 2,
+            "dice": 0.0,
+            "kw_hit": 1,
+            "head": "Page 17 of 43  Saad et al. EURASIP Journal on Adva"
+          }
+        ]
+      },
+      "p4_ran": false
+    },
+    "label": "边界案例(需人工复核)"
+  },
+  {
+    "idx": 15,
+    "question": "基于步态的方法（gait-based approaches）具有哪些重要特征？",
+    "scores": {
+      "AR": 0.8615,
+      "CP": 1.0,
+      "F": 1.0
+    },
+    "probes": {
+      "anchors": [
+        "any",
+        "be",
+        "can",
+        "can be measured for any",
+        "distance",
+        "gait-based",
+        "gait-based approaches",
+        "measured",
+        "unique"
+      ],
+      "p1_original": true,
+      "p1_hits_per_doc": {
+        "Deep Learning for Person Re-identification A Survey and Outlook.pdf": 329,
+        "Deep Video-based Person Re-identification (Deep Vid-ReID) Comprehensive Survey.pdf": 280,
+        "Pedestrian Alignment Network for Large-scale Person Re-Identification.pdf": 120
+      }
+    },
+    "label": "OK"
+  },
+  {
+    "idx": 16,
+    "question": "光流（optical flow）是如何定义的？",
+    "scores": {
+      "AR": 0.8603,
+      "CP": 1.0,
+      "F": 1.0
+    },
+    "probes": {
+      "anchors": [
+        "flow",
+        "optical",
+        "optical flow"
+      ],
+      "p1_original": true,
+      "p1_hits_per_doc": {
+        "Deep Learning for Person Re-identification A Survey and Outlook.pdf": 3,
+        "Deep Video-based Person Re-identification (Deep Vid-ReID) Comprehensive Survey.pdf": 58,
+        "Pedestrian Alignment Network for Large-scale Person Re-Identification.pdf": 0
+      }
+    },
+    "label": "OK"
+  },
+  {
+    "idx": 17,
+    "question": "深度度量学习（deep metric learning）技术通过优化什么来实现高重识别准确率？",
+    "scores": {
+      "AR": 0.976,
+      "CP": 1.0,
+      "F": 1.0
+    },
+    "probes": {
+      "anchors": [
+        "deep",
+        "deep metric learning",
+        "function",
+        "loss function",
+        "metric"
+      ],
+      "p1_original": true,
+      "p1_hits_per_doc": {
+        "Deep Learning for Person Re-identification A Survey and Outlook.pdf": 194,
+        "Deep Video-based Person Re-identification (Deep Vid-ReID) Comprehensive Survey.pdf": 203,
+        "Pedestrian Alignment Network for Large-scale Person Re-Identification.pdf": 38
+      }
+    },
+    "label": "OK"
+  },
+  {
+    "idx": 18,
+    "question": "弱监督学习（weakly supervised learning）在视频行人重识别中是如何定义的？",
+    "scores": {
+      "AR": 0,
+      "CP": 0,
+      "F": 1.0
+    },
+    "probes": {
+      "anchors": [
+        "supervised",
+        "weakly",
+        "weakly supervised learning"
+      ],
+      "p1_original": true,
+      "p1_hits_per_doc": {
+        "Deep Learning for Person Re-identification A Survey and Outlook.pdf": 76,
+        "Deep Video-based Person Re-identification (Deep Vid-ReID) Comprehensive Survey.pdf": 121,
+        "Pedestrian Alignment Network for Large-scale Person Re-Identification.pdf": 4
+      },
+      "p2": {
+        "bm25_best": {
+          "dice": 0.0,
+          "kw_hit": 3,
+          "content": "threshold for each dataset. In the second step, hard frames that include pose changes are \nused to train the model. Experiments over DukeMTMC-VideoReID and MARS show: \n82.8% and 61.8% R1 accuracy, res",
+          "idx": 0
+        },
+        "vector_best": {
+          "dice": 0.0,
+          "kw_hit": 3,
+          "content": "threshold for each dataset. In the second step, hard frames that include pose changes are \nused to train the model. Experiments over DukeMTMC-VideoReID and MARS show: \n82.8% and 61.8% R1 accuracy, res",
+          "idx": 0
+        }
+      },
+      "p3": {
+        "best": {
+          "dice": 0.0,
+          "kw_hit": 3,
+          "content": "threshold for each dataset. In the second step, hard frames that include pose changes are \nused to train the model. Experiments over DukeMTMC-VideoReID and MARS show: \n82.8% and 61.8% R1 accuracy, res",
+          "idx": 0
+        },
+        "top3": [
+          {
+            "idx": 0,
+            "dice": 0.0,
+            "kw_hit": 3,
+            "head": "threshold for each dataset. In the second step, ha"
+          },
+          {
+            "idx": 1,
+            "dice": 0.0,
+            "kw_hit": 2,
+            "head": "on Computer Vision and Pattern Recognition (2019) "
+          },
+          {
+            "idx": 2,
+            "dice": 0.0,
+            "kw_hit": 2,
+            "head": "10506 (2021)  175. K.K. Singh et al., Hide ‐and‐se"
+          }
+        ]
+      },
+      "p4_ran": false
+    },
+    "label": "边界案例(需人工复核)"
+  },
+  {
+    "idx": 19,
+    "question": "在讨论部分，论文认为视频行人重识别系统中的时间特征会带来哪两个副作用？",
+    "scores": {
+      "AR": 0,
+      "CP": 0,
+      "F": 1.0
+    },
+    "probes": {
+      "anchors": [],
+      "p1_original": null,
+      "p1_hits_per_doc": {},
+      "p2": {
+        "bm25_best": {
+          "dice": 0.0,
+          "kw_hit": 0,
+          "content": "",
+          "idx": -1
+        },
+        "vector_best": {
+          "dice": 0.0,
+          "kw_hit": 0,
+          "content": "",
+          "idx": -1
+        }
+      },
+      "p3": {
+        "best": {
+          "dice": 0.0,
+          "kw_hit": 0,
+          "content": "",
+          "idx": -1
+        },
+        "top3": [
+          {
+            "idx": 0,
+            "dice": 0.0,
+            "kw_hit": 0,
+            "head": "temporal representations for video person re-ident"
+          },
+          {
+            "idx": 1,
+            "dice": 0.0,
+            "kw_hit": 0,
+            "head": "temporal appearance representation for viceo-based"
+          },
+          {
+            "idx": 2,
+            "dice": 0.0,
+            "kw_hit": 0,
+            "head": "IEEE TRANSACTIONS ON CIRCUITS AND SYSTEMS FOR VIDE"
+          }
+        ]
+      },
+      "p4_ran": false
+    },
+    "label": "需人工复核(无锚点)"
+  },
+  {
+    "idx": 20,
+    "question": "在“挑战与未来方向”部分，论文提到了哪两个与服装变化相关的挑战性问题？",
+    "scores": {
+      "AR": 0.9156,
+      "CP": 0,
+      "F": 0.5714
+    },
+    "probes": {
+      "anchors": [
+        "cloth-changing",
+        "discrimination",
+        "long-term",
+        "long-term cloth-changing problem",
+        "problem",
+        "uniform",
+        "uniform discrimination problem"
+      ],
+      "p1_original": true,
+      "p1_hits_per_doc": {
+        "Deep Learning for Person Re-identification A Survey and Outlook.pdf": 26,
+        "Deep Video-based Person Re-identification (Deep Vid-ReID) Comprehensive Survey.pdf": 47,
+        "Pedestrian Alignment Network for Large-scale Person Re-Identification.pdf": 17
+      },
+      "p2": {
+        "bm25_best": {
+          "dice": 0.0,
+          "kw_hit": 0,
+          "content": "",
+          "idx": -1
+        },
+        "vector_best": {
+          "dice": 0.0,
+          "kw_hit": 3,
+          "content": "7  Challenges and future directions\nPerson ReID is still considered as an open challenging problem. As recommended by \n[186], it promotes the research toward other research areas such as player re-ide",
+          "idx": 0
+        }
+      },
+      "p3": {
+        "best": {
+          "dice": 0.0,
+          "kw_hit": 3,
+          "content": "7  Challenges and future directions\nPerson ReID is still considered as an open challenging problem. As recommended by \n[186], it promotes the research toward other research areas such as player re-ide",
+          "idx": 0
+        },
+        "top3": [
+          {
+            "idx": 0,
+            "dice": 0.0,
+            "kw_hit": 3,
+            "head": "7  Challenges and future directions Person ReID is"
+          },
+          {
+            "idx": 1,
+            "dice": 0.0,
+            "kw_hit": 3,
+            "head": "identifying a person despite appearance variations"
+          },
+          {
+            "idx": 2,
+            "dice": 0.0,
+            "kw_hit": 1,
+            "head": "IEEE TRANSACTIONS ON PATTERN ANAL YSIS AND MACHINE"
+          }
+        ]
+      },
+      "p4_ran": false
+    },
+    "label": "召回问题(BM25侧)"
+  },
+  {
+    "idx": 21,
+    "question": "论文指出，使用自动检测器获取行人图像时，通常会遇到哪两种检测错误？",
+    "scores": {
+      "AR": 0.8605,
+      "CP": 1.0,
+      "F": 1.0
+    },
+    "probes": {
+      "anchors": [
+        "background",
+        "excessive",
+        "excessive background",
+        "missing",
+        "part missing"
+      ],
+      "p1_original": true,
+      "p1_hits_per_doc": {
+        "Deep Learning for Person Re-identification A Survey and Outlook.pdf": 10,
+        "Deep Video-based Person Re-identification (Deep Vid-ReID) Comprehensive Survey.pdf": 11,
+        "Pedestrian Alignment Network for Large-scale Person Re-Identification.pdf": 36
+      }
+    },
+    "label": "OK"
+  },
+  {
+    "idx": 22,
+    "question": "为解决对齐问题，论文提出的行人对齐网络（PAN）是如何利用注意力机制的？",
+    "scores": {
+      "AR": 0.7606,
+      "CP": 0.8333,
+      "F": 1.0
+    },
+    "probes": {
+      "anchors": [
+        "pan"
+      ],
+      "p1_original": true,
+      "p1_hits_per_doc": {
+        "Deep Learning for Person Re-identification A Survey and Outlook.pdf": 11,
+        "Deep Video-based Person Re-identification (Deep Vid-ReID) Comprehensive Survey.pdf": 4,
+        "Pedestrian Alignment Network for Large-scale Person Re-Identification.pdf": 20
+      }
+    },
+    "label": "OK"
+  },
+  {
+    "idx": 23,
+    "question": "PAN的训练过程由哪三个组件构成？",
+    "scores": {
+      "AR": 0,
+      "CP": 1.0,
+      "F": 1.0
+    },
+    "probes": {
+      "anchors": [],
+      "p1_original": null,
+      "p1_hits_per_doc": {},
+      "p2": {
+        "bm25_best": {
+          "dice": 0.0,
+          "kw_hit": 0,
+          "content": "",
+          "idx": -1
+        },
+        "vector_best": {
+          "dice": 0.0,
+          "kw_hit": 0,
+          "content": "",
+          "idx": -1
+        }
+      },
+      "p3": {
+        "best": {
+          "dice": 0.0,
+          "kw_hit": 0,
+          "content": "",
+          "idx": -1
+        },
+        "top3": [
+          {
+            "idx": 0,
+            "dice": 0.0,
+            "kw_hit": 0,
+            "head": "3038 IEEE TRANSACTIONS ON CIRCUITS AND SYSTEMS FOR"
+          },
+          {
+            "idx": 1,
+            "dice": 0.0,
+            "kw_hit": 0,
+            "head": "ZHENG et al. : PAN FOR LARGE-SCALE PERSON re-ID 30"
+          },
+          {
+            "idx": 2,
+            "dice": 0.0,
+            "kw_hit": 0,
+            "head": "to incorporate pedestrian alignment into a re-iden"
+          }
+        ]
+      },
+      "p4_ran": false
+    },
+    "label": "需人工复核(无锚点)"
+  },
+  {
+    "idx": 24,
+    "question": "在PAN中，仿射参数（affine parameters）是如何被估计的？",
+    "scores": {
+      "AR": 0.8293,
+      "CP": 0,
+      "F": 1.0
+    },
+    "probes": {
+      "anchors": [
+        "affine",
+        "affine parameters",
+        "base",
+        "base branch",
+        "branch",
+        "parameters"
+      ],
+      "p1_original": true,
+      "p1_hits_per_doc": {
+        "Deep Learning for Person Re-identification A Survey and Outlook.pdf": 130,
+        "Deep Video-based Person Re-identification (Deep Vid-ReID) Comprehensive Survey.pdf": 289,
+        "Pedestrian Alignment Network for Large-scale Person Re-Identification.pdf": 141
+      },
+      "p2": {
+        "bm25_best": {
+          "dice": 0.0,
+          "kw_hit": 1,
+          "content": "9646.\n[91] J. Si, H. Zhang, C.-G. Li, J. Kuen, X. Kong, A. C. Kot, and\nG. Wang, “Dual attention matching network for context-aware\nfeature sequence based person re-identification,” in CVPR , 2018,\npp.",
+          "idx": 1
+        },
+        "vector_best": {
+          "dice": 0.0,
+          "kw_hit": 4,
+          "content": "ZHENG et al. : PAN FOR LARGE-SCALE PERSON re-ID 3039\nFig. 2. Architecture of the pedestrian alignment network (PAN). It consists of two identification networks and an affine estimation network. We den",
+          "idx": 3
+        }
+      },
+      "p3": {
+        "best": {
+          "dice": 0.0,
+          "kw_hit": 4,
+          "content": "ZHENG et al. : PAN FOR LARGE-SCALE PERSON re-ID 3039\nFig. 2. Architecture of the pedestrian alignment network (PAN). It consists of two identification networks and an affine estimation network. We den",
+          "idx": 1
+        },
+        "top3": [
+          {
+            "idx": 0,
+            "dice": 0.0,
+            "kw_hit": 1,
+            "head": "3038 IEEE TRANSACTIONS ON CIRCUITS AND SYSTEMS FOR"
+          },
+          {
+            "idx": 1,
+            "dice": 0.0,
+            "kw_hit": 4,
+            "head": "ZHENG et al. : PAN FOR LARGE-SCALE PERSON re-ID 30"
+          },
+          {
+            "idx": 2,
+            "dice": 0.0,
+            "kw_hit": 3,
+            "head": "the predicted affine parameters and then apply the"
+          }
+        ]
+      },
+      "p4_ran": false
+    },
+    "label": "边界案例(需人工复核)"
+  },
+  {
+    "idx": 25,
+    "question": "论文中提到的空间变换网络（STN）在处理检测错误时起到了什么作用？",
+    "scores": {
+      "AR": 0.8104,
+      "CP": 1.0,
+      "F": 1.0
+    },
+    "probes": {
+      "anchors": [
+        "stn"
+      ],
+      "p1_original": true,
+      "p1_hits_per_doc": {
+        "Deep Learning for Person Re-identification A Survey and Outlook.pdf": 7,
+        "Deep Video-based Person Re-identification (Deep Vid-ReID) Comprehensive Survey.pdf": 0,
+        "Pedestrian Alignment Network for Large-scale Person Re-Identification.pdf": 6
+      }
+    },
+    "label": "OK"
+  },
+  {
+    "idx": 26,
+    "question": "论文提出的PAN方法与使用“patch matching”（补丁匹配）策略的方法有何显著不同？",
+    "scores": {
+      "AR": 0.8743,
+      "CP": 1.0,
+      "F": 0.75
+    },
+    "probes": {
+      "anchors": [
+        "patch matching"
+      ],
+      "p1_original": true,
+      "p1_hits_per_doc": {
+        "Deep Learning for Person Re-identification A Survey and Outlook.pdf": 0,
+        "Deep Video-based Person Re-identification (Deep Vid-ReID) Comprehensive Survey.pdf": 0,
+        "Pedestrian Alignment Network for Large-scale Person Re-Identification.pdf": 2
+      }
+    },
+    "label": "OK"
+  },
+  {
+    "idx": 27,
+    "question": "在PAN的仿射估计分支（affine estimation branch）中，接收了来自基础分支的哪两个输入张量？",
+    "scores": {
+      "AR": 0.6626,
+      "CP": 1.0,
+      "F": 0
+    },
+    "probes": {
+      "anchors": [
+        "affine",
+        "affine estimation branch",
+        "branch",
+        "estimation",
+        "res2",
+        "res4"
+      ],
+      "p1_original": true,
+      "p1_hits_per_doc": {
+        "Deep Learning for Person Re-identification A Survey and Outlook.pdf": 8,
+        "Deep Video-based Person Re-identification (Deep Vid-ReID) Comprehensive Survey.pdf": 15,
+        "Pedestrian Alignment Network for Large-scale Person Re-Identification.pdf": 98
+      }
+    },
+    "label": "OK"
+  },
+  {
+    "idx": 28,
+    "question": "在测试阶段，PAN生成的行人描述符（pedestrian descriptor）是如何构成的？",
+    "scores": {
+      "AR": 0.8201,
+      "CP": 1.0,
+      "F": 1.0
+    },
+    "probes": {
+      "anchors": [
+        "descriptor",
+        "pedestrian",
+        "pedestrian descriptor"
+      ],
+      "p1_original": true,
+      "p1_hits_per_doc": {
+        "Deep Learning for Person Re-identification A Survey and Outlook.pdf": 22,
+        "Deep Video-based Person Re-identification (Deep Vid-ReID) Comprehensive Survey.pdf": 24,
+        "Pedestrian Alignment Network for Large-scale Person Re-Identification.pdf": 74
+      }
+    },
+    "label": "OK"
+  },
+  {
+    "idx": 29,
+    "question": "论文在哪些大规模行人重识别数据集上验证了PAN的性能？",
+    "scores": {
+      "AR": 0,
+      "CP": 0,
+      "F": 1.0
+    },
+    "probes": {
+      "anchors": [
+        "cuhk03-np",
+        "dukemtmc-",
+        "market-1501"
+      ],
+      "p1_original": true,
+      "p1_hits_per_doc": {
+        "Deep Learning for Person Re-identification A Survey and Outlook.pdf": 11,
+        "Deep Video-based Person Re-identification (Deep Vid-ReID) Comprehensive Survey.pdf": 41,
+        "Pedestrian Alignment Network for Large-scale Person Re-Identification.pdf": 33
+      },
+      "p2": {
+        "bm25_best": {
+          "dice": 0.0,
+          "kw_hit": 0,
+          "content": "",
+          "idx": -1
+        },
+        "vector_best": {
+          "dice": 0.0,
+          "kw_hit": 0,
+          "content": "",
+          "idx": -1
+        }
+      },
+      "p3": {
+        "best": {
+          "dice": 0.0,
+          "kw_hit": 0,
+          "content": "",
+          "idx": -1
+        },
+        "top3": [
+          {
+            "idx": 0,
+            "dice": 0.0,
+            "kw_hit": 0,
+            "head": "ZHENG et al. : PAN FOR LARGE-SCALE PERSON re-ID 30"
+          },
+          {
+            "idx": 1,
+            "dice": 0.0,
+            "kw_hit": 0,
+            "head": "12. A. Doering et al., PoseTrackReID: dataset desc"
+          },
+          {
+            "idx": 2,
+            "dice": 0.0,
+            "kw_hit": 0,
+            "head": "inProc. CVPR , 2013, pp. 3594–3601. [8] W. Li, R. "
+          }
+        ]
+      },
+      "p4": {
+        "answer": "根据提供的参考资料，文中仅介绍了PAN（Pedestrian Alignment Network）的训练流程、网络结构（包括基干分支和对齐分支）、空间变换网络（STN）的应用以及其解决检测误差导致未对齐问题的机制。\n\n**提供的参考资料中并未提及论文在哪些具体的大规模行人重识别数据集上验证了PAN的性能。**",
+        "verdict": {
+          "covered": false,
+          "reason": "模型回答声称资料未提及数据集，未能提供参考答案中要求的Market-1501、CUHK03-NP和DukeMTMC-reID这三个具体数据集名称。"
+        }
+      },
+      "p4_ran": true
+    },
+    "label": "召回问题(两侧都检索不到)"
+  },
+  {
+    "idx": 30,
+    "question": "实验结果表明，PAN中的两个分支（基础分支和对齐分支）具有什么特性？",
+    "scores": {
+      "AR": 0,
+      "CP": 0,
+      "F": 0
+    },
+    "probes": {
+      "anchors": [
+        "complementary"
+      ],
+      "p1_original": true,
+      "p1_hits_per_doc": {
+        "Deep Learning for Person Re-identification A Survey and Outlook.pdf": 0,
+        "Deep Video-based Person Re-identification (Deep Vid-ReID) Comprehensive Survey.pdf": 0,
+        "Pedestrian Alignment Network for Large-scale Person Re-Identification.pdf": 5
+      },
+      "p2": {
+        "bm25_best": {
+          "dice": 0.0,
+          "kw_hit": 0,
+          "content": "",
+          "idx": -1
+        },
+        "vector_best": {
+          "dice": 0.0,
+          "kw_hit": 1,
+          "content": "ZHENG et al. : PAN FOR LARGE-SCALE PERSON re-ID 3041\nD. Pedestrian Descriptor\nGiven the fine-tuned PAN model and an input image xi,\nthe pedestrian descriptor is the weighted fusion of the FC\nfeatures ",
+          "idx": 1
+        }
+      },
+      "p3": {
+        "best": {
+          "dice": 0.0,
+          "kw_hit": 1,
+          "content": "ZHENG et al. : PAN FOR LARGE-SCALE PERSON re-ID 3041\nD. Pedestrian Descriptor\nGiven the fine-tuned PAN model and an input image xi,\nthe pedestrian descriptor is the weighted fusion of the FC\nfeatures ",
+          "idx": 0
+        },
+        "top3": [
+          {
+            "idx": 0,
+            "dice": 0.0,
+            "kw_hit": 1,
+            "head": "ZHENG et al. : PAN FOR LARGE-SCALE PERSON re-ID 30"
+          },
+          {
+            "idx": 1,
+            "dice": 0.0,
+            "kw_hit": 0,
+            "head": "fair comparison, we present the results of our met"
+          },
+          {
+            "idx": 2,
+            "dice": 0.0,
+            "kw_hit": 0,
+            "head": "ZHENG et al. : PAN FOR LARGE-SCALE PERSON re-ID 30"
+          }
+        ]
+      },
+      "p4_ran": false
+    },
+    "label": "召回问题(BM25侧)"
+  }
+]

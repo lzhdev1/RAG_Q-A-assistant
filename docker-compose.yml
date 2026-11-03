@@ -1,7 +1,5 @@
-version: "3.8"
-
 services:
-  # RAG 应用服务
+  # RAG 应用服务（后端）
   rag-app:
     build:
       context: ./app
@@ -26,4 +24,19 @@ services:
       - "8001:8000"
     volumes:
       - ./chroma_data:/chroma/chroma
+    restart: unless-stopped
+
+  # 前端服务（Next.js，自研 Open WebUI 风格界面）
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+      args:
+        # 构建期注入后端代理目标（web 构建时写死，rewrites 转发用）
+        - API_PROXY_TARGET=http://rag-app:8000
+    container_name: rag-web
+    ports:
+      - "3000:3000"
+    depends_on:
+      - rag-app
     restart: unless-stopped
