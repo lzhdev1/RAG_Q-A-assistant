@@ -35,6 +35,13 @@ const WELCOME_SUGGESTIONS = [
   '时间特征会带来哪两个副作用？',
 ]
 
+// RAGAS 评测（最新 v6 · HyDE 配置，口径：30 题评估集，来源 docs/ERROR_ANALYSIS.md 附录 C，2026-11 存档）
+const RAGAS_METRICS = [
+  { key: '忠实性 F', value: '0.9542' },
+  { key: '答案相关 AR', value: '0.8490' },
+  { key: '上下文精度 CP', value: '0.9472' },
+] as const
+
 export default function Home() {
   const [sessions, setSessions] = useState<Session[]>([])
   const [activeId, setActiveId] = useState<string | null>(null)
@@ -324,6 +331,28 @@ export default function Home() {
               <span className="truncate">{s.title}</span>
             </div>
           ))}
+        </div>
+
+        {/* ── RAGAS 评测 ── */}
+        <div className="mx-3 mb-1 mt-3 rounded-lg border border-border-soft bg-surface-2 p-3">
+          <div className="mb-1.5 flex items-center justify-between">
+            <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-content-3">
+              RAGAS 评测
+            </span>
+            <span className="rounded bg-content-2/10 px-1.5 py-0.5 text-[10px] font-medium text-content-2">
+              v6 · HyDE
+            </span>
+          </div>
+          <div className="flex gap-2">
+            {RAGAS_METRICS.map((m) => (
+              <div key={m.key} className="flex-1 rounded-md bg-surface px-1 py-1.5 text-center">
+                <div className="text-[13px] font-semibold tabular-nums leading-tight text-content">
+                  {m.value}
+                </div>
+                <div className="mt-0.5 text-[10px] leading-tight text-content-muted">{m.key}</div>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* ── 文档管理 ── */}
