@@ -6,7 +6,8 @@ services:
       dockerfile: Dockerfile
     container_name: rag-app
     ports:
-      - "8000:8000"
+      # 8000 被本机 quantlab-api 占用，宿主侧改 8010（容器内仍 8000，web 经 rag-app:8000 访问不受影响）
+      - "8010:8000"
     volumes:
       # 挂载本地目录到容器，实现代码热更新 + 数据持久化
       - ./backend:/app
@@ -26,7 +27,8 @@ services:
         - API_PROXY_TARGET=http://rag-app:8000
     container_name: rag-web
     ports:
-      - "3000:3000"
+      # 3000 被本机 quantlab-frontend 占用，宿主侧改 3001（容器内仍 3000）
+      - "3001:3000"
     depends_on:
       - rag-app
     restart: unless-stopped

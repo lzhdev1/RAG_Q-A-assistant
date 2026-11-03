@@ -21,6 +21,9 @@ chroma_data/
 *.log
 logs/
 
+# 构建临时缓存（torch wheel 预下载目录，构建完成后删除）
+.torch_cache/
+
 # ===== IDE / 编辑器 =====
 .vscode/
 .idea/
