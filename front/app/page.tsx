@@ -43,11 +43,97 @@ export default function Home() {
   const [docs, setDocs] = useState<DocInfo[]>([])
   const [uploadStatus, setUploadStatus] = useState('')
 
+  // 主题：初始固定（与 SSR 一致，避免 hydration 不匹配），
+  // mount 后从 html.dark（由 layout 内联脚本提前设置）同步真实主题
+  const [dark, setDark] = useState<boolean>(false)
+
+  // 挂载后同步：读 html class（themeScript 已在 hydration 前设置）
+  useEffect(() => {
+    setDark(document.documentElement.classList.contains('dark'))
+  }, [])
+
   const chatAreaRef = useRef<HTMLDivElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
+  // ── 打字机节奏队列 ─────────────────────────────
+  // 后端逐 token 到达（可能非常快），前端缓冲后按固定速率逐字打出，
+  // 形成打字机观感；done 后等待队列清空再结束 streaming。
+  const typeStateRef = useRef<{ sid: string; msgId: string; pending: string; done: boolean } | null>(null)
+  const typeTimerRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const TICK_MS = 30
+  const CHARS_PER_TICK = 3
+
+  const flushTyping = useCallback(() => {
+    const st = typeStateRef.current
+    if (!st) return
+    if (st.pending.length > 0) {
+      const chunk = st.pending.slice(0, CHARS_PER_TICK)
+      st.pending = st.pending.slice(CHARS_PER_TICK)
+      setSessions((prev) =>
+        prev.map((s) =>
+          s.id === st.sid
+            ? {
+                ...s,
+                messages: s.messages.map((m) =>
+                  m.id === st.msgId ? { ...m, content: m.content + chunk } : m,
+                ),
+              }
+            : s,
+        ),
+      )
+      requestAnimationFrame(() => {
+        const el = chatAreaRef.current
+        if (el) el.scrollTop = el.scrollHeight
+      })
+    }
+    if (st.pending.length === 0 && st.done) {
+      if (typeTimerRef.current) clearInterval(typeTimerRef.current)
+      typeTimerRef.current = null
+      setSessions((prev) =>
+        prev.map((s) =>
+          s.id === st.sid
+            ? {
+                ...s,
+                messages: s.messages.map((m) =>
+                  m.id === st.msgId ? { ...m, streaming: false } : m,
+                ),
+              }
+            : s,
+        ),
+      )
+      setSending(false)
+      typeStateRef.current = null
+    }
+  }, [])
+
+  const ensureTyping = useCallback(() => {
+    if (!typeTimerRef.current && typeStateRef.current) {
+      typeTimerRef.current = setInterval(flushTyping, TICK_MS)
+    }
+  }, [flushTyping])
+
+  // 卸载时清理打字定时器
+  useEffect(() => {
+    return () => {
+      if (typeTimerRef.current) clearInterval(typeTimerRef.current)
+    }
+  }, [])
+
   const activeSession = sessions.find((s) => s.id === activeId) || null
   const isEmpty = !activeSession || activeSession.messages.length === 0
+
+  const toggleTheme = useCallback(() => {
+    setDark((v) => {
+      const next = !v
+      document.documentElement.classList.toggle('dark', next)
+      try {
+        localStorage.setItem('rag-theme', next ? 'dark' : 'light')
+      } catch {
+        /* 忽略存储不可用 */
+      }
+      return next
+    })
+  }, [])
 
   const scrollToBottom = useCallback(() => {
     requestAnimationFrame(() => {
@@ -117,23 +203,18 @@ export default function Home() {
             }))
           },
           onToken: (tok: string) => {
-            patchSession(sid, (s) => ({
-              ...s,
-              messages: s.messages.map((m) =>
-                m.id === assistantMsg.id ? { ...m, content: m.content + tok } : m,
-              ),
-            }))
-            scrollToBottom()
+            // 缓冲进打字队列（不直接渲染，由 flushTyping 逐字打出）
+            if (!typeStateRef.current) {
+              typeStateRef.current = { sid, msgId: assistantMsg.id, pending: '', done: false }
+            }
+            typeStateRef.current.pending += tok
+            ensureTyping()
           },
           onDone: () => {
-            patchSession(sid, (s) => ({
-              ...s,
-              messages: s.messages.map((m) =>
-                m.id === assistantMsg.id ? { ...m, streaming: false } : m,
-              ),
-            }))
-            setSending(false)
-            scrollToBottom()
+            if (typeStateRef.current) {
+              typeStateRef.current.done = true
+              if (typeStateRef.current.pending.length === 0) flushTyping()
+            }
           },
           onError: (detail: string) => {
             patchSession(sid, (s) => ({
@@ -191,18 +272,34 @@ export default function Home() {
   )
 
   return (
-    <div className="flex h-screen overflow-hidden bg-zinc-950 text-zinc-200">
+    <div className="flex h-screen overflow-hidden bg-surface text-content transition-colors">
       {/* ── 侧边栏 ── */}
-      <aside className="flex w-[260px] min-w-[260px] flex-col border-r border-white/10 bg-white/[0.03] backdrop-blur-xl">
-        <div className="flex items-center gap-2 border-b border-white/10 px-4 py-4 text-[15px] font-semibold tracking-wide text-zinc-100">
+      <aside className="flex w-[260px] min-w-[260px] flex-col border-r border-border-soft bg-surface-2 backdrop-blur-xl">
+        <div className="flex items-center gap-2 border-b border-border-soft px-4 py-4 text-[15px] font-semibold tracking-wide text-content">
           <span className="flex h-6 w-6 items-center justify-center rounded-md bg-gradient-to-br from-blue-400 to-blue-600 text-[13px] shadow-lg shadow-blue-500/20">
             📚
           </span>
-          RAG Q&amp;A
+          <span className="flex-1">RAG Q&amp;A</span>
+          <button
+            className="flex h-8 w-8 items-center justify-center rounded-lg border border-border-strong text-content-2 transition hover:bg-surface-2 hover:text-content"
+            onClick={toggleTheme}
+            title={dark ? '切换到亮色' : '切换到暗色'}
+          >
+            {dark ? (
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <circle cx="12" cy="12" r="4" />
+                <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
+              </svg>
+            ) : (
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+              </svg>
+            )}
+          </button>
         </div>
 
         <button
-          className="mx-3 mb-1 mt-3 rounded-lg border border-white/15 px-3.5 py-2.5 text-left text-[13px] text-zinc-200 transition hover:border-white/25 hover:bg-white/5"
+          className="mx-3 mb-1 mt-3 rounded-lg border border-border-strong px-3.5 py-2.5 text-left text-[13px] text-content transition hover:border-border-strong hover:bg-content-2/10"
           onClick={startNewChat}
         >
           ＋ 新建对话
@@ -210,15 +307,15 @@ export default function Home() {
 
         <div className="flex-1 overflow-y-auto px-3 py-1">
           {sessions.length === 0 && (
-            <div className="px-3 py-2 text-xs text-zinc-500">暂无历史会话</div>
+            <div className="px-3 py-2 text-xs text-content-muted">暂无历史会话</div>
           )}
           {sessions.map((s) => (
             <div
               key={s.id}
               className={`mb-0.5 cursor-pointer truncate rounded-lg px-3 py-2 text-[13px] transition ${
                 s.id === activeId
-                  ? 'bg-white/10 text-white shadow-sm'
-                  : 'text-zinc-400 hover:bg-white/5 hover:text-zinc-100'
+                  ? 'bg-content-2/15 text-content shadow-sm'
+                  : 'text-content-2 hover:bg-content-2/10 hover:text-content'
               }`}
               onClick={() => switchSession(s.id)}
             >
@@ -228,8 +325,8 @@ export default function Home() {
         </div>
 
         {/* ── 文档管理 ── */}
-        <div className="flex max-h-[260px] flex-col gap-2 overflow-y-auto border-t border-white/10 px-3 py-3">
-          <div className="text-[11px] font-semibold uppercase tracking-[0.08em] text-zinc-500">
+        <div className="flex max-h-[260px] flex-col gap-2 overflow-y-auto border-t border-border-soft px-3 py-3">
+          <div className="text-[11px] font-semibold uppercase tracking-[0.08em] text-content-3">
             知识库文档
           </div>
 
@@ -254,17 +351,17 @@ export default function Home() {
           </div>
 
           {uploadStatus && (
-            <div className="truncate text-[11px] text-zinc-400">{uploadStatus}</div>
+            <div className="truncate text-[11px] text-content-2">{uploadStatus}</div>
           )}
 
-          {docs.length === 0 && <div className="text-[11px] text-zinc-500">知识库暂无文档</div>}
+          {docs.length === 0 && <div className="text-[11px] text-content-muted">知识库暂无文档</div>}
           {docs.map((d) => (
-            <div key={d.name} className="flex items-center justify-between gap-2 text-xs text-zinc-400">
+            <div key={d.name} className="flex items-center justify-between gap-2 text-xs text-content-2">
               <span className="flex-1 truncate" title={`${(d.size / 1024).toFixed(1)} KB`}>
                 📄 {d.name}
               </span>
               <button
-                className="rounded px-1.5 py-0.5 text-[13px] text-zinc-500 transition hover:bg-white/5 hover:text-red-400"
+                className="rounded px-1.5 py-0.5 text-[13px] text-content-muted transition hover:bg-content-2/10 hover:text-red-400"
                 title="删除"
                 onClick={() => handleDeleteDoc(d.name)}
               >
@@ -283,19 +380,19 @@ export default function Home() {
           className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_-10%,rgba(59,130,246,0.08),transparent)]"
         />
 
-        <div className={`chat-area relative flex-1 overflow-y-auto ${isEmpty ? 'flex-none overflow-visible' : ''}`} ref={chatAreaRef}>
+        <div className={`chat-area relative flex-1 overflow-y-auto scroll-smooth ${isEmpty ? 'flex-none overflow-visible' : ''}`} ref={chatAreaRef}>
           <div className={`mx-auto ${isEmpty ? 'flex max-w-none flex-col items-center p-0' : 'max-w-[768px] px-5 pb-32 pt-6'}`}>
             {isEmpty ? (
-              <div className="flex h-full w-full flex-col items-center justify-center gap-2.5 text-center text-zinc-500">
-                <h2 className="m-0 bg-gradient-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-[22px] font-semibold tracking-[0.01em] text-transparent">
+              <div className="flex h-full w-full flex-col items-center justify-center gap-2.5 text-center">
+                <h2 className="m-0 bg-gradient-to-r from-content via-content-2 to-content-muted bg-clip-text text-[22px] font-semibold tracking-[0.01em] text-transparent">
                   企业知识库问答助手
                 </h2>
-                <p className="m-0 text-[13px] text-zinc-500">基于混合检索 + Rerank + HyDE 的论文知识问答</p>
+                <p className="m-0 text-[13px] text-content-3">基于混合检索 + Rerank + HyDE 的论文知识问答</p>
                 <div className="mt-5 flex w-full max-w-[420px] flex-col gap-2">
                   {WELCOME_SUGGESTIONS.map((q) => (
                     <button
                       key={q}
-                      className="m-0 rounded-lg border border-white/15 px-3.5 py-2.5 text-left text-[13px] text-zinc-300 transition hover:border-white/25 hover:bg-white/5"
+                      className="m-0 rounded-lg border border-border-strong px-3.5 py-2.5 text-left text-[13px] text-content-2 transition hover:border-border-strong hover:bg-content-2/10"
                       onClick={() => handleSend(q)}
                     >
                       {q}
@@ -307,13 +404,13 @@ export default function Home() {
               activeSession.messages.map((m) => (
                 <div
                   key={m.id}
-                  className={`mb-6 flex gap-3 ${m.role === 'user' ? 'justify-end' : ''}`}
+                  className={`msg-in mb-6 flex gap-3 ${m.role === 'user' ? 'justify-end' : ''}`}
                 >
                   <div
                     className={`flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg text-xs font-bold tracking-wide ${
                       m.role === 'assistant'
                         ? 'bg-gradient-to-br from-blue-400 to-blue-600 text-white shadow-lg shadow-blue-500/25'
-                        : 'border border-white/10 bg-white/10 text-zinc-300'
+                        : 'border border-border-strong bg-surface-2 text-content-2'
                     }`}
                   >
                     {m.role === 'assistant' ? 'AI' : '我'}
@@ -321,28 +418,28 @@ export default function Home() {
                   <div className="flex max-w-[85%] flex-col gap-2">
                     {m.role === 'assistant' ? (
                       <>
-                        <div className="rounded-2xl rounded-tl-md border border-white/10 bg-white/[0.06] px-3.5 py-2.5 text-sm leading-[1.7] text-zinc-100">
+                        <div className="rounded-2xl rounded-tl-md border border-border-soft bg-bubble-ai px-3.5 py-2.5 text-sm leading-[1.7] text-content">
                           {m.content ? (
                             <div className="markdown">
                               <ReactMarkdown remarkPlugins={[remarkGfm]}>{m.content}</ReactMarkdown>
                             </div>
                           ) : m.streaming ? (
-                            <span className="text-zinc-500">思考中…</span>
+                            <span className="thinking text-content-muted">思考中…</span>
                           ) : null}
-                          {m.streaming && m.content && <span className="cursor">▍</span>}
+                          {m.streaming && m.content && <span className="cursor" />}
                         </div>
 
                         {m.sources && m.sources.length > 0 && (
-                          <div className="rounded-xl border border-white/10 bg-white/[0.03] px-3.5 py-2.5">
-                            <div className="mb-1.5 text-xs font-semibold tracking-wide text-zinc-400">
+                          <div className="rounded-xl border border-border-soft bg-surface-2 px-3.5 py-2.5">
+                            <div className="mb-1.5 text-xs font-semibold tracking-wide text-content-2">
                               📎 引用来源（Rerank Top-{m.sources.length}）
                             </div>
                             {m.sources.map((src, i) => (
                               <div
                                 key={i}
-                                className="line-clamp-3 border-t border-white/10 py-1 text-xs leading-[1.6] text-zinc-400 first:border-t-0"
+                                className="line-clamp-3 border-t border-border-soft py-1 text-xs leading-[1.6] text-content-2 first:border-t-0"
                               >
-                                <span className="mr-1 font-bold tabular-nums text-zinc-200">[{i + 1}]</span>
+                                <span className="mr-1 font-bold tabular-nums text-content">{i + 1}</span>
                                 {src.content}
                               </div>
                             ))}
@@ -350,7 +447,7 @@ export default function Home() {
                         )}
                       </>
                     ) : (
-                      <div className="rounded-2xl rounded-tr-md bg-blue-600 px-3.5 py-2.5 text-sm leading-[1.7] text-white shadow-lg shadow-blue-500/20">
+                      <div className="rounded-2xl rounded-tr-md bg-gradient-to-br from-blue-500 to-blue-600 px-3.5 py-2.5 text-sm leading-[1.7] text-white shadow-lg shadow-blue-500/20">
                         {m.content}
                       </div>
                     )}
@@ -363,9 +460,9 @@ export default function Home() {
 
         {/* ── 输入区 ── */}
         <div
-          className={`${isEmpty ? 'relative z-10 mx-auto w-full max-w-[768px] px-5 pt-6' : 'absolute inset-x-0 bottom-0 bg-gradient-to-t from-zinc-950 via-zinc-950/85 to-transparent px-5 pb-5 pt-8'}`}
+          className={`${isEmpty ? 'relative z-10 mx-auto w-full max-w-[768px] px-5 pt-6' : 'absolute inset-x-0 bottom-0 bg-gradient-to-t from-surface via-surface/85 to-transparent px-5 pb-5 pt-8'}`}
         >
-          <div className="mx-auto flex max-w-[768px] items-end gap-2.5 rounded-3xl border border-white/15 bg-zinc-900/80 px-5 py-3 shadow-[0_8px_30px_rgba(0,0,0,0.35)] backdrop-blur-xl transition focus-within:border-blue-400/50 focus-within:shadow-[0_0_0_4px_rgba(59,130,246,0.12),0_8px_30px_rgba(0,0,0,0.35)]">
+          <div className="mx-auto flex max-w-[768px] items-end gap-2.5 rounded-3xl border border-border-strong bg-input-bg px-5 py-3 shadow-[0_8px_30px_rgba(0,0,0,0.12)] backdrop-blur-xl transition focus-within:border-blue-400/60 focus-within:shadow-[0_0_0_4px_rgba(59,130,246,0.12),0_8px_30px_rgba(0,0,0,0.12)]">
             <textarea
               value={input}
               onChange={(e) => setInput(e.target.value)}
@@ -373,10 +470,10 @@ export default function Home() {
               placeholder="输入你的问题，Enter 发送，Shift+Enter 换行"
               rows={1}
               disabled={sending}
-              className="max-h-[200px] flex-1 resize-none bg-transparent px-1 py-1 text-[15px] leading-[1.6] text-zinc-100 outline-none placeholder:text-zinc-500"
+              className="max-h-[200px] flex-1 resize-none bg-transparent px-1 py-1 text-[15px] leading-[1.6] text-content outline-none placeholder:text-content-muted"
             />
             <button
-              className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-blue-400 to-blue-600 text-white shadow-lg shadow-blue-500/30 transition hover:scale-105 hover:shadow-blue-500/40 active:scale-95 disabled:cursor-not-allowed disabled:bg-zinc-700 disabled:text-zinc-500 disabled:shadow-none"
+              className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-blue-400 to-blue-600 text-white shadow-lg shadow-blue-500/30 transition hover:scale-105 hover:shadow-blue-500/40 active:scale-95 disabled:cursor-not-allowed disabled:bg-border-strong disabled:text-content-muted disabled:shadow-none"
               disabled={sending || !input.trim()}
               onClick={() => handleSend()}
               title="发送"
