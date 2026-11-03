@@ -1,0 +1,21 @@
+# Python
+__pycache__
+*.pyc
+*.pyo
+.venv
+venv
+
+# 环境变量（含密钥，不进入镜像）
+.env
+.env.local
+
+# 运行时数据（挂载卷，不打包进镜像）
+chroma_data
+docs
+
+# 评估产物（运行时生成）
+eval_results_*.json
+failure_analysis_results.json
+
+# 测试数据
+test_dataset.json

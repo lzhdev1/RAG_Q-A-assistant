@@ -1,6 +1,6 @@
 # 失败样本分析报告（Error Analysis）
 
-> 背景：`app/eval_results.json`（2026-08-26 评估）中 7 道题的 Context Precision = 0。
+> 背景：`backend/eval_results.json`（2026-08-26 评估）中 7 道题的 Context Precision = 0。
 > 本文档通过逐题回查三篇 PDF 原文，将失败原因精确归类，并记录修复措施与验证结果。
 > 依据：RAGAS 只输出三项指标均值，**逐题失败归因是 RAG 评测后的标准下游动作（error analysis）**。
 
@@ -31,10 +31,10 @@
 ### 修复 1：NFKC 连字归一化（针对第 7 题）
 
 **改动**：
-- `app/vector_store.py`：新增 `normalize_text()`（`unicodedata.normalize("NFKC", ...)`），在 `_chunk_file()` 中于分块前对每页文本归一化；
-- `app/qa_chain.py`：`_load_and_chunk_docs()` 同样在分块前归一化（BM25 侧）；
-- `app/loader.py`：`load_documents()` 同样归一化；
-- `app/vector_store.py`：引入 `PARSER_VERSION = 2`，manifest 版本变更时**全量重建向量库**（清理旧 chunk 后重新向量化），避免"PDF 文件字节未变 → 增量同步跳过"导致旧文本残留。
+- `backend/vector_store.py`：新增 `normalize_text()`（`unicodedata.normalize("NFKC", ...)`），在 `_chunk_file()` 中于分块前对每页文本归一化；
+- `backend/qa_chain.py`：`_load_and_chunk_docs()` 同样在分块前归一化（BM25 侧）；
+- `backend/loader.py`：`load_documents()` 同样归一化；
+- `backend/vector_store.py`：引入 `PARSER_VERSION = 2`，manifest 版本变更时**全量重建向量库**（清理旧 chunk 后重新向量化），避免"PDF 文件字节未变 → 增量同步跳过"导致旧文本残留。
 
 **验证（本地复跑，pypdf 直接解析）**：
 
@@ -79,9 +79,9 @@ RAGAS 官方仅输出三指标总体均值（Faithfulness / Answer Relevancy / C
 
 # 附录 A：30 题全量评估的失败归因（v2，2026-10-28）
 
-> 背景：连字归一化修复后，容器内重跑 RAGAS 30 题评估（`app/eval_results_v2.json`），
+> 背景：连字归一化修复后，容器内重跑 RAGAS 30 题评估（`backend/eval_results_v2.json`），
 > 总体 F=0.9040 / AR=0.6031 / CP=0.7056。其中 12 道题 AR<0.6 或 CP<0.6，视为失败。
-> 本文通过**四探针归因脚本**（`app/failure_analysis.py`）逐题定位失败环节。
+> 本文通过**四探针归因脚本**（`backend/failure_analysis.py`）逐题定位失败环节。
 
 ## A.1 四探针方法
 
@@ -181,7 +181,7 @@ _write_records()          每条记录 _num_log_records_since_last_persist += 1
 
 ## B.4 修复与验证
 
-**改动**（`app/vector_store.py`，PARSER_VERSION 3→4）：
+**改动**（`backend/vector_store.py`，PARSER_VERSION 3→4）：
 - 新增 `CHROMA_COLLECTION_METADATA = {"hnsw:batch_size": 50, "hnsw:sync_threshold": 50, "hnsw:num_threads": 1}`；
 - `Chroma(..., collection_metadata=...)` 在 `sync_vectorstore()`/`get_vectorstore()` 中统一传入。
 
@@ -220,7 +220,7 @@ Q29 的失败本质是**用户查询里没有实体词**（Market-1501/CUHK03/Du
 
 **为什么对症**：假设文档会"生成"出 Market-1501/CUHK03 这些实体词 → 向量检索自然命中实验章节。
 
-**实现**（`app/qa_chain.py`）：
+**实现**（`backend/qa_chain.py`）：
 - 新增 `HYDE_PROMPT`：引导 LLM 写"假设性文档摘录"（150 字内陈述性段落，含专有名词，禁止元描述）；
 - 新增 `HyDEVectorRetriever`（`BaseRetriever` 子类）：`llm.invoke(HYDE_PROMPT)` → `vectorstore.similarity_search(hyde_doc, k=10)`；
 - 混合检索改为**三路**：`EnsembleRetriever([bm25(原始查询), 原始向量, HyDE向量], weights=[0.4, 0.3, 0.3])`；

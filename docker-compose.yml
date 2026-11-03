@@ -2,34 +2,24 @@ services:
   # RAG 应用服务（后端）
   rag-app:
     build:
-      context: ./app
+      context: ./backend
       dockerfile: Dockerfile
     container_name: rag-app
     ports:
       - "8000:8000"
     volumes:
       # 挂载本地目录到容器，实现代码热更新 + 数据持久化
-      - ./app:/app
-      - ./docs:/app/docs
-      - ./chroma_data:/app/chroma_data
+      - ./backend:/app
+      - ./data/docs:/app/docs
+      - ./data/chroma_data:/app/chroma_data
     env_file:
-      - ./app/.env
-    restart: unless-stopped
-
-  # 向量数据库服务（Chroma 独立部署模式）
-  chroma-db:
-    image: chromadb/chroma:latest
-    container_name: chroma-db
-    ports:
-      - "8001:8000"
-    volumes:
-      - ./chroma_data:/chroma/chroma
+      - ./backend/.env
     restart: unless-stopped
 
   # 前端服务（Next.js，自研 Open WebUI 风格界面）
   web:
     build:
-      context: ./web
+      context: ./front
       dockerfile: Dockerfile
       args:
         # 构建期注入后端代理目标（web 构建时写死，rewrites 转发用）

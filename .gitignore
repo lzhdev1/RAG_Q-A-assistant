@@ -17,6 +17,7 @@ build/
 .env.*.local
 
 # ===== 数据与日志 =====
+data/chroma_data/
 chroma_data/
 *.log
 logs/
