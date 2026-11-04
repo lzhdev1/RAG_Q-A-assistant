@@ -334,11 +334,12 @@ export default function Home() {
             <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-content-3">
               RAGAS 评测
             </span>
-            <span
-              className="rounded bg-content-2/10 px-1.5 py-0.5 text-[10px] font-medium text-content-2"
-              title="v8：四路混合检索（BM25+向量+HyDE+英文翻译路），修复跨语言漏检（Q5 CR 0→1）；30 题评估 F 0.9850 / AR 0.8525 / CP 0.9075 / CR 0.9667"
-            >
+            <span className="group relative rounded bg-content-2/10 px-1.5 py-0.5 text-[10px] font-medium text-content-2">
               v8
+              {/* 自定义悬浮提示：白底圆角浮起，宽度约原生 title 的 1/3 */}
+              <span className="pointer-events-none absolute right-0 top-full z-20 mt-2 w-[120px] rounded-lg bg-white px-2.5 py-2 text-[10px] font-normal leading-[1.5] text-neutral-700 opacity-0 shadow-[0_10px_28px_rgba(0,0,0,0.22)] transition-all duration-150 group-hover:-translate-y-1 group-hover:opacity-100">
+                v8：四路混合检索（BM25+向量+HyDE+英文翻译路），修复跨语言漏检；30 题评估 F 0.9850 / AR 0.8525 / CP 0.9075 / CR 0.9667
+              </span>
             </span>
           </div>
           <div className="flex flex-col gap-2">
