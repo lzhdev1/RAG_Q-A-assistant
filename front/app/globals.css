@@ -15,7 +15,7 @@
   --color-content-muted:  #a3a3a3;   /* 占位 / 弱文字 */
   --color-border-soft:    #e5e5e5;   /* 细边框 */
   --color-border-strong:  #d4d4d4;   /* 粗边框 */
-  --color-bubble-ai:      #f5f5f5;   /* AI 气泡 */
+  --color-bubble-ai:      #ffffff;   /* AI 气泡（亮色纯白） */
   --color-input-bg:       #ffffff;   /* 输入框底 */
   --color-code-bg:        #f5f5f5;   /* 代码块 */
   --color-code-inline:    rgba(0, 0, 0, 0.06);
