@@ -38,8 +38,12 @@ const RAGAS_METRICS = [
 ] as const
 
 export default function Home() {
-  const [sessions, setSessions] = useState<Session[]>([])
-  const [activeId, setActiveId] = useState<string | null>(null)
+  // 初始默认一个空"新对话"并激活它（首次打开即有会话）
+  const firstSessionIdRef = useRef<string>(newSessionId())
+  const [sessions, setSessions] = useState<Session[]>(() => [
+    { id: firstSessionIdRef.current, title: '新对话', messages: [] },
+  ])
+  const [activeId, setActiveId] = useState<string | null>(firstSessionIdRef.current)
   const [input, setInput] = useState('')
   const [sending, setSending] = useState(false)
   const [docs, setDocs] = useState<DocInfo[]>([])
