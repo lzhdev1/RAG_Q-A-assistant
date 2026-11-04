@@ -96,6 +96,11 @@ body {
   }
 }
 
+/* ── 引用来源折叠箭头旋转 ───────────── */
+details[open] .src-chevron {
+  transform: rotate(180deg);
+}
+
 /* ── 消息上浮淡入 ─────────────────────── */
 @keyframes msg-in {
   from {
@@ -134,7 +139,47 @@ body {
 /* ── Markdown 渲染（跟随主题） ─────────── */
 .markdown {
   font-size: 14px;
-  line-height: 1.7;
+  line-height: 1.75;
+}
+
+/* 气泡内首尾元素对齐，不留多余空隙 */
+.markdown > :first-child {
+  margin-top: 0;
+}
+
+.markdown > :last-child {
+  margin-bottom: 0;
+}
+
+.markdown p {
+  margin: 6px 0;
+}
+
+/* 标题层级：清晰且不喧宾夺主 */
+.markdown h1,
+.markdown h2,
+.markdown h3,
+.markdown h4 {
+  font-weight: 650;
+  color: var(--color-content);
+  line-height: 1.4;
+  margin: 14px 0 6px;
+}
+
+.markdown h1 {
+  font-size: 16.5px;
+}
+
+.markdown h2 {
+  font-size: 15.5px;
+}
+
+.markdown h3 {
+  font-size: 14.5px;
+}
+
+.markdown h4 {
+  font-size: 14px;
 }
 
 .markdown pre {
@@ -145,6 +190,7 @@ body {
   overflow-x: auto;
   font-size: 13px;
   color: var(--color-content);
+  margin: 8px 0;
 }
 
 .markdown code {
@@ -176,6 +222,7 @@ body {
 .markdown th {
   background: var(--color-surface-2);
   font-weight: 600;
+  text-align: left;
 }
 
 .markdown a {
@@ -196,13 +243,34 @@ body {
 
 .markdown ul,
 .markdown ol {
-  padding-left: 1.4em;
-  margin: 4px 0;
+  padding-left: 1.5em;
+  margin: 6px 0;
+}
+
+.markdown li {
+  margin: 3px 0;
+}
+
+/* 列表项内嵌段落不产生多余行距 */
+.markdown li > p {
+  margin: 0;
+}
+
+.markdown ul ul {
+  list-style: circle;
+}
+
+.markdown hr {
+  border: none;
+  border-top: 1px solid var(--color-border-soft);
+  margin: 12px 0;
 }
 
 .markdown blockquote {
   border-left: 3px solid color-mix(in srgb, var(--color-link) 50%, transparent);
+  background: color-mix(in srgb, var(--color-surface-2) 60%, transparent);
+  border-radius: 0 8px 8px 0;
   margin: 8px 0;
-  padding: 4px 12px;
+  padding: 6px 12px;
   color: var(--color-quote);
 }

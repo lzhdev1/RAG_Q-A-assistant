@@ -433,7 +433,7 @@ export default function Home() {
                   className={`msg-in mb-6 flex gap-3 ${m.role === 'user' ? 'flex-row-reverse' : ''}`}
                 >
                   <div
-                    className={`flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg text-xs font-bold tracking-wide ${
+                    className={`flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-xs font-bold tracking-wide ${
                       m.role === 'assistant'
                         ? 'bg-gradient-to-br from-blue-400 to-blue-600 text-white shadow-lg shadow-blue-500/25'
                         : 'border border-border-strong bg-surface-2 text-content-2'
@@ -444,7 +444,7 @@ export default function Home() {
                   <div className="flex max-w-[85%] flex-col gap-2">
                     {m.role === 'assistant' ? (
                       <>
-                        <div className="rounded-2xl rounded-tl-md border border-border-soft bg-bubble-ai px-3.5 py-2.5 text-sm leading-[1.7] text-content">
+                        <div className="rounded-2xl rounded-tl-md border border-border-soft bg-bubble-ai px-4 py-3 text-sm leading-[1.7] text-content shadow-[0_1px_3px_rgba(0,0,0,0.05)]">
                           {m.content ? (
                             <div className="markdown">
                               <ReactMarkdown remarkPlugins={[remarkGfm]}>{m.content}</ReactMarkdown>
@@ -456,24 +456,32 @@ export default function Home() {
                         </div>
 
                         {m.sources && m.sources.length > 0 && (
-                          <div className="rounded-xl border border-border-soft bg-surface-2 px-3.5 py-2.5">
-                            <div className="mb-1.5 text-xs font-semibold tracking-wide text-content-2">
-                              📎 引用来源（Rerank Top-{m.sources.length}）
+                          <details className="group/sources rounded-xl border border-border-soft bg-surface-2">
+                            <summary className="flex cursor-pointer select-none items-center justify-between gap-2 px-3.5 py-2.5 text-xs font-semibold tracking-wide text-content-2 transition hover:text-content [&::-webkit-details-marker]:hidden">
+                              <span className="flex items-center gap-1.5">
+                                <LinkIcon size={12} />
+                                引用来源（{m.sources.length}）
+                              </span>
+                              <ChevronIcon size={12} className="src-chevron transition-transform duration-200" />
+                            </summary>
+                            <div className="border-t border-border-soft px-3.5 py-1">
+                              {m.sources.map((src, i) => (
+                                <div
+                                  key={i}
+                                  className="line-clamp-3 border-t border-border-soft py-1.5 text-xs leading-[1.6] text-content-2 first:border-t-0"
+                                >
+                                  <span className="mr-1.5 inline-flex h-4 w-4 items-center justify-center rounded bg-content-2/10 text-[10px] font-bold tabular-nums text-content">
+                                    {i + 1}
+                                  </span>
+                                  {src.content}
+                                </div>
+                              ))}
                             </div>
-                            {m.sources.map((src, i) => (
-                              <div
-                                key={i}
-                                className="line-clamp-3 border-t border-border-soft py-1 text-xs leading-[1.6] text-content-2 first:border-t-0"
-                              >
-                                <span className="mr-1 font-bold tabular-nums text-content">{i + 1}</span>
-                                {src.content}
-                              </div>
-                            ))}
-                          </div>
+                          </details>
                         )}
                       </>
                     ) : (
-                      <div className="rounded-2xl rounded-tr-md bg-gradient-to-br from-blue-500 to-blue-600 px-3.5 py-2.5 text-sm leading-[1.7] text-white shadow-lg shadow-blue-500/20">
+                      <div className="rounded-2xl rounded-tr-md bg-gradient-to-br from-blue-500 to-blue-600 px-4 py-3 text-sm leading-[1.7] text-white shadow-lg shadow-blue-500/20">
                         {m.content}
                       </div>
                     )}
@@ -583,6 +591,35 @@ function UploadIcon({ size = 13 }: { size?: number }) {
       <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
       <path d="M17 8l-5-5-5 5" />
       <path d="M12 3v12" />
+    </svg>
+  )
+}
+
+/** 引用来源（来源列表标题） */
+function LinkIcon({ size = 13 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" {...iconProps}>
+      <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+      <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+    </svg>
+  )
+}
+
+/** 展开箭头（引用来源折叠指示） */
+function ChevronIcon({ size = 12, className = '' }: { size?: number; className?: string }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.8}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+    >
+      <path d="M6 9l6 6 6-6" />
     </svg>
   )
 }
