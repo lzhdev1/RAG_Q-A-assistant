@@ -276,7 +276,7 @@ export default function Home() {
   return (
     <div className="flex h-screen overflow-hidden bg-surface text-content transition-colors">
       {/* ── 侧边栏 ── */}
-      <aside className="flex w-[260px] min-w-[260px] flex-col border-r border-border-soft bg-surface-2 backdrop-blur-xl">
+      <aside className="flex w-[300px] min-w-[300px] flex-col border-r border-border-soft bg-surface-2 backdrop-blur-xl">
         <div className="flex items-center gap-2 border-b border-border-soft px-4 py-4 text-[15px] font-semibold tracking-wide text-content">
           <span className="flex h-6 w-6 items-center justify-center rounded-md bg-gradient-to-br from-blue-400 to-blue-600 text-white shadow-lg shadow-blue-500/20">
             <LogoIcon size={14} />
@@ -419,7 +419,7 @@ export default function Home() {
         />
 
         <div className={`chat-area relative flex-1 overflow-y-auto scroll-smooth ${isEmpty ? 'flex-none overflow-visible' : ''}`} ref={chatAreaRef}>
-          <div className={`mx-auto ${isEmpty ? 'flex max-w-none flex-col items-center p-0' : 'max-w-[768px] px-5 pb-32 pt-6'}`}>
+          <div className={`mx-auto ${isEmpty ? 'flex max-w-none flex-col items-center p-0' : 'max-w-[900px] px-5 pb-32 pt-6'}`}>
             {isEmpty ? (
               <div className="flex h-full w-full flex-col items-center justify-center gap-2.5 text-center">
                 <h2 className="m-0 bg-gradient-to-r from-content via-content-2 to-content-muted bg-clip-text text-[22px] font-semibold tracking-[0.01em] text-transparent">
@@ -494,9 +494,9 @@ export default function Home() {
 
         {/* ── 输入区 ── */}
         <div
-          className={`${isEmpty ? 'relative z-10 mx-auto w-full max-w-[768px] px-5 pt-6' : 'absolute inset-x-0 bottom-0 bg-gradient-to-t from-surface via-surface/85 to-transparent px-5 pb-5 pt-8'}`}
+          className={`${isEmpty ? 'relative z-10 mx-auto w-full max-w-[900px] px-5 pt-6' : 'absolute inset-x-0 bottom-0 bg-gradient-to-t from-surface via-surface/85 to-transparent px-5 pb-5 pt-8'}`}
         >
-          <div className="mx-auto flex max-w-[768px] items-end gap-2.5 rounded-3xl border border-border-strong bg-input-bg px-5 py-3 shadow-[0_8px_30px_rgba(0,0,0,0.12)] backdrop-blur-xl transition focus-within:border-blue-400/60 focus-within:shadow-[0_0_0_4px_rgba(59,130,246,0.12),0_8px_30px_rgba(0,0,0,0.12)]">
+          <div className="mx-auto flex max-w-[900px] items-end gap-2.5 rounded-3xl border border-border-strong bg-input-bg px-5 py-3 shadow-[0_8px_30px_rgba(0,0,0,0.12)] backdrop-blur-xl transition focus-within:border-blue-400/60 focus-within:shadow-[0_0_0_4px_rgba(59,130,246,0.12),0_8px_30px_rgba(0,0,0,0.12)]">
             <textarea
               value={input}
               onChange={(e) => setInput(e.target.value)}
