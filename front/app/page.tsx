@@ -29,11 +29,12 @@ function newMsgId(): string {
   return `m_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`
 }
 
-// RAGAS 评测（最新 v6 · HyDE 配置，口径：30 题评估集，来源 docs/ERROR_ANALYSIS.md 附录 C，2026-11 存档）
+// RAGAS 评测（最新 v8 · 四路混合 + 英文翻译检索路，口径：30 题评估集，来源 ERROR_ANALYSIS.md 附录 D，2026-11-04）
 const RAGAS_METRICS = [
-  { key: '忠实性 F', value: 0.9542 },
-  { key: '答案相关 AR', value: 0.8490 },
-  { key: '上下文精度 CP', value: 0.9472 },
+  { key: '忠实性 F', value: 0.9850 },
+  { key: '答案相关 AR', value: 0.8525 },
+  { key: '上下文精度 CP', value: 0.9075 },
+  { key: '上下文召回 CR', value: 0.9667 },
 ] as const
 
 export default function Home() {
@@ -334,7 +335,7 @@ export default function Home() {
               RAGAS 评测
             </span>
             <span className="rounded bg-content-2/10 px-1.5 py-0.5 text-[10px] font-medium text-content-2">
-              v6 · HyDE
+              v8 · 英文路
             </span>
           </div>
           <div className="flex flex-col gap-2">
@@ -350,7 +351,7 @@ export default function Home() {
                   />
                 </div>
                 <span className="w-[52px] flex-shrink-0 text-right text-[11px] font-semibold tabular-nums leading-none text-content">
-                  {m.value.toFixed(2)}/1
+                  {(Math.round((m.value + Number.EPSILON) * 100) / 100).toFixed(2)}/1
                 </span>
               </div>
             ))}
