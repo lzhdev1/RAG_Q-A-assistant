@@ -5,6 +5,7 @@ langchain-openai==0.2.0
 langchain-text-splitters==0.3.0
 pypdf==4.3.0
 docx2txt==0.8
+python-pptx==1.0.2
 python-dotenv==1.0.1
 torch==2.14.1
 sentence-transformers==3.0.0

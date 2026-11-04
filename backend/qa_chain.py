@@ -3,11 +3,8 @@ from langchain_openai import ChatOpenAI
 from langchain.prompts import PromptTemplate
 from langchain.retrievers import EnsembleRetriever
 from langchain_community.retrievers import BM25Retriever
-from langchain_community.document_loaders import PyPDFLoader
-from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_core.retrievers import BaseRetriever
-from langchain_core.documents import Document
-from vector_store import get_vectorstore, normalize_text
+from vector_store import get_vectorstore
 from typing import Any
 import os
 import glob
@@ -92,32 +89,15 @@ CUSTOM_PROMPT = PromptTemplate(
 
 
 def _load_and_chunk_docs(docs_dir="docs"):
-    """加载并切分文档，用于 BM25 检索器（支持 PDF/TXT/MD）"""
-    all_chunks = []
-    splitter = RecursiveCharacterTextSplitter(
-        chunk_size=800,
-        chunk_overlap=100,
-        separators=["\n\n", "\n", " ", ""],
-    )
+    """加载并切分文档，用于 BM25 检索器（支持 PDF/DOCX/PPTX/TXT/MD）"""
+    from vector_store import _chunk_file, _is_supported
 
-    from vector_store import _is_supported
+    all_chunks = []
     for name in sorted(os.listdir(docs_dir)):
         if not _is_supported(name):
             continue
         path = os.path.join(docs_dir, name)
-        ext = os.path.splitext(name)[1].lower()
-        if ext == ".pdf":
-            loader = PyPDFLoader(path)
-            pages = loader.load()
-        else:  # .txt / .md
-            with open(path, "r", encoding="utf-8", errors="ignore") as f:
-                text = f.read()
-            pages = [Document(page_content=text, metadata={"source": path, "page": 0})]
-        # 连字归一化：展开 afﬁne→affine 等，保证 BM25 关键词能命中
-        for page in pages:
-            page.page_content = normalize_text(page.page_content)
-        chunks = splitter.split_documents(pages)
-        all_chunks.extend(chunks)
+        all_chunks.extend(_chunk_file(path))
 
     return all_chunks
 

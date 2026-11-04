@@ -3,10 +3,12 @@ from langchain_community.document_loaders import PyPDFLoader
 from langchain_community.embeddings import DashScopeEmbeddings
 from langchain_core.documents import Document
 from langchain_text_splitters import RecursiveCharacterTextSplitter
+import docx2txt
 import hashlib
 import json
 import os
 import unicodedata
+from pptx import Presentation
 
 
 PERSIST_DIR = "./chroma_data"
@@ -70,13 +72,13 @@ def _file_hash(filepath):
 # ── 文本分块 ─────────────────────────────────────────────────────
 
 def _is_supported(filename):
-    """支持的文档类型：PDF / TXT / Markdown"""
+    """支持的文档类型：PDF / DOCX / PPTX / TXT / Markdown"""
     ext = os.path.splitext(filename)[1].lower()
-    return ext in {".pdf", ".txt", ".md"}
+    return ext in {".pdf", ".docx", ".pptx", ".txt", ".md"}
 
 
 def _chunk_file(filepath):
-    """加载单个文档并切分为文档块（含连字归一化）"""
+    """加载单个文档并切分为文档块（含连字归一化），支持 PDF/DOCX/PPTX/TXT/MD"""
     ext = os.path.splitext(filepath)[1].lower()
     splitter = RecursiveCharacterTextSplitter(
         chunk_size=800,
@@ -87,6 +89,28 @@ def _chunk_file(filepath):
     if ext == ".pdf":
         loader = PyPDFLoader(filepath)
         pages = loader.load()
+    elif ext == ".docx":
+        # docx2txt：解压 word/document.xml 提取正文（不丢表格文本）
+        text = docx2txt.process(filepath) or ""
+        pages = [Document(page_content=text, metadata={"source": filepath, "page": 0})]
+    elif ext == ".pptx":
+        # python-pptx：逐页提取所有文本框内容，空页跳过
+        prs = Presentation(filepath)
+        slides = []
+        for idx, slide in enumerate(prs.slides, start=1):
+            parts = []
+            for shape in slide.shapes:
+                if shape.has_text_frame:
+                    for para in shape.text_frame.paragraphs:
+                        line = "".join(run.text for run in para.runs)
+                        if line.strip():
+                            parts.append(line)
+            if parts:
+                slides.append((idx, "\n".join(parts)))
+        pages = [
+            Document(page_content=t, metadata={"source": filepath, "page": i})
+            for i, t in slides
+        ]
     else:  # .txt / .md：按文本直接读取
         with open(filepath, "r", encoding="utf-8", errors="ignore") as f:
             text = f.read()

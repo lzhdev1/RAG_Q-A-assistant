@@ -31,7 +31,7 @@ llm = None
 reranker_retriever = None
 
 DOCS_DIR = "docs"
-ALLOWED_EXT = {".pdf", ".docx", ".doc", ".txt", ".md"}
+ALLOWED_EXT = {".pdf", ".docx", ".pptx", ".txt", ".md"}
 
 
 def _rebuild_components():

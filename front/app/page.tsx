@@ -328,7 +328,7 @@ export default function Home() {
         </div>
 
         {/* ── RAGAS 评测 ── */}
-        <div className="mx-3 mb-1 mt-3 rounded-lg border border-border-soft bg-surface-2 p-3">
+        <div className="border-t border-border-soft px-3 py-3">
           <div className="mb-2 flex items-center justify-between">
             <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-content-3">
               RAGAS 评测
@@ -368,7 +368,7 @@ export default function Home() {
               type="file"
               ref={fileInputRef}
               className="hidden"
-              accept=".pdf,.docx,.doc,.txt,.md"
+              accept=".pdf,.docx,.pptx,.txt,.md"
               onChange={(e) => {
                 const f = e.target.files?.[0]
                 if (f) handleUpload(f)
