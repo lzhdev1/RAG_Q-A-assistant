@@ -14,6 +14,7 @@ import httpx
 # ── 开关（环境变量可覆盖，便于 A/B 对照） ─────────────────────────
 ENABLE_HYDE = os.getenv("ENABLE_HYDE", "1") == "1"  # HyDE 假设文档检索
 ENABLE_QUERY_REWRITE = os.getenv("ENABLE_QUERY_REWRITE", "0") == "1"  # 查询改写（历史负收益，默认关）
+ENABLE_EN_QUERY = os.getenv("ENABLE_EN_QUERY", "1") == "1"  # 英文翻译检索路（v8：补中英语言鸿沟漏检）
 
 
 # ── 查询改写 Prompt ──────────────────────────────────────────────
@@ -130,6 +131,59 @@ class HyDEVectorRetriever(BaseRetriever):
         except Exception as e:
             print(f"  HyDE 生成失败，回退原始查询: {e}")
             return self.vectorstore.similarity_search(query, k=self.k)
+
+
+# ── 英文翻译 Prompt（v8：语言对齐检索路） ──────────────────────────
+EN_TRANSLATE_PROMPT = PromptTemplate(
+    input_variables=["question"],
+    template="""Translate the following question into English for searching English academic papers.
+Rules:
+1. Output ONLY the English translation, no explanations, no quotes, no prefixes.
+2. If the question is already in English, output it unchanged.
+
+Question: {question}
+
+English:""",
+)
+
+
+def _translate_to_english(llm, question: str) -> str:
+    """LLM 将问题翻译为英文，用于对英文语料库做语言对齐检索；失败回退原 query"""
+    try:
+        response = llm.invoke(EN_TRANSLATE_PROMPT.format(question=question))
+        text = response.content.strip()
+        # 清理常见杂质前缀（模型偶尔输出 "Here is the translation:" 等）
+        for prefix in ("Here is the English translation:", "Translation:", "English translation:", "Here is the translation:"):
+            if text.startswith(prefix):
+                text = text[len(prefix):].strip()
+        return text or question
+    except Exception as e:
+        print(f"  英文翻译失败，回退原始查询: {e}")
+        return question
+
+
+class EnglishQueryRetriever(BaseRetriever):
+    """
+    英文翻译检索路（v8）：中文 query → LLM 翻译为英文 → 向量检索。
+    背景：text-embedding-v3 中→英跨语言对齐弱，中文 query 对英文论文库召回漏检
+    （Q5 五方面枚举句：中文三路 top-30 均漏，英文 query top-10 即命中且过 rerank 阈值）。
+    定位：检索语言与库语言对齐，噪声由 rerank 用原始 query 过滤。
+    代价：每次查询多 1 次 LLM 翻译调用。
+    """
+    vectorstore: Any
+    llm: ChatOpenAI
+    k: int = 10
+    enabled: bool = True
+
+    class Config:
+        arbitrary_types_allowed = True
+
+    def _get_relevant_documents(self, query: str, *, run_manager):
+        if not self.enabled:
+            return self.vectorstore.similarity_search(query, k=self.k)
+        en_q = _translate_to_english(self.llm, query)
+        print(f"  英文检索路: {en_q[:100]}")
+        return self.vectorstore.similarity_search(en_q, k=self.k)
 
 
 class DashScopeRerankerRetriever(BaseRetriever):
@@ -267,10 +321,18 @@ def build_rag_components():
         k=10,
     )
 
-    # 4. 三路混合检索器（BM25 词面 + 原始向量语义 + HyDE 假设文档语义）
+    # 3b. 英文翻译检索路（v8：中文 query 对英文论文库的语言鸿沟补漏）
+    en_retriever = EnglishQueryRetriever(
+        vectorstore=vectorstore,
+        llm=llm,
+        k=10,
+        enabled=ENABLE_EN_QUERY,
+    )
+
+    # 4. 四路混合检索器（BM25 词面 + 原始向量语义 + HyDE 假设文档 + 英文翻译路）
     ensemble_retriever = EnsembleRetriever(
-        retrievers=[bm25_retriever, vector_retriever, hyde_retriever],
-        weights=[0.4, 0.3, 0.3],
+        retrievers=[bm25_retriever, vector_retriever, hyde_retriever, en_retriever],
+        weights=[0.35, 0.25, 0.25, 0.15],  # BM25 让 0.05 给英文路；英文路只补漏不喧宾
     )
 
     # 5. Reranker 重排序（DashScope API，动态截断：相对阈值 α=0.6 + 硬顶 6 条；打分用原始查询）

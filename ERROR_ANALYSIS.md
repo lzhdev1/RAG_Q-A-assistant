@@ -255,3 +255,65 @@ F 仅降于 Q6（1→0.75）与 Q27（1→0.5）两题，逐位证据：
 | Q27 | 0.72989328587608 → 0.729956130543572（末位波动） | 0.8333 → **完全相同** | 上下文未变，F 变化=裁判抖动 |
 
 AR/CP 双指标逐位相同证明检索与生成结果一致，F 波动来自 RAGAS 裁判 LLM 判定的随机性（同型噪声在 v3/v4 的 Q3 已记录）。**HyDE 未造成检索退化，保留为当前默认检索配置。**
+
+# 附录 D：Rerank 动态截断（v7）与英文翻译检索路（v8）
+
+## D.1 背景：固定 top-3 导致回答信息不全
+
+LLM 严格依据召回 chunk 作答，rerank 固定取前 3 条会把大量相关信息排掉（PPT 场景：答案分布 5 页只能带 3 页）。用户否决"盲目加大 k"（治标不治本），经原理讨论拍板：**相对阈值动态截断**。
+
+## D.2 v7 动态截断（qa_chain.py，commit 4b773fb）
+
+**30 题分数探针**（`scripts/rerank_score_probe.py`，产物 `rerank_scores_probe.json`）：
+- 全量打分 1217 条，候选 25~64 条/题（均值 40.6）；
+- top1 分数跨 0.62~0.98（0.36 区间）→ **绝对阈值不可行**；
+- 分数形态 = "top1 断层 + 长尾"，无干净双峰；α=0.6 时保留 1~6 条（多数 2~4）。
+
+**实现**：`DashScopeRerankerRetriever` 全量打分（`top_n=min(len,100)`）→ `threshold=top1×α(0.6)` → 保留 `score≥threshold` → 硬顶 `hard_cap=6`；API 失败降级 `candidates[:3]`。
+
+**v7 评估**（eval_results_v7.json，30 题）：F 0.9542→**0.9835**、AR 0.8490→0.8509、CP 0.9472→0.8885、**CR（新增）0.9000**。
+
+## D.3 CR=0 三题归因（v7）
+
+| 题 | 归因 | 证据 |
+|---|---|---|
+| Q28 | **RAGAS judge 误判** | 保留 chunk 原文含 "concatenate the two 1×1×2048 FC embeddings to form a 4096-dim pedestrian descriptor"——reference 信息 100% 在 context，CR=0 属 judge 拆声明失败 |
+| Q15 | **阈值边缘波动** | 答案 chunk "gait has some important characteristics: It is unique and can be measured for any distance" 分数 0.590 恰在阈值 0.515 线上，运行间有波动 |
+| Q5 | **检索层漏检（跨语言鸿沟）** | 见 D.4 |
+
+## D.4 Q5 漏检根因：中英语言鸿沟（三步定位法）
+
+`text-embedding-v3` 中→英跨语言对齐弱。对照实验（`scripts/diag_q5_recall.py`）：
+
+| 检索配置 | 结果 |
+|---|---|
+| 中文 query 三路 top-10/20/30（候选 68 条） | 答案 chunk **全部未进候选** |
+| 中文/中英混合改写变体 ×3 | 全部未进候选 |
+| **英文 query 向量 top-10** | **候选 #10 命中 → rerank #7 score=0.680（过阈值保留）** |
+
+结论：扩大 top-k / 中文改写对跨语言漏检无效（治标），**检索语言须与库语言对齐**。
+
+## D.5 v8 英文翻译检索路（qa_chain.py，commit 待定）
+
+**实现**：新增 `EnglishQueryRetriever`——LLM 把 query 翻译为英文（1 次廉价调用，失败回退原 query）→ 英文向量检索 top-10；并入四路 `EnsembleRetriever([bm25, vector, hyde, en], weights=[0.35, 0.25, 0.25, 0.15])`；rerank 仍用原始 query 过滤噪声。开关 `ENABLE_EN_QUERY`（默认 1）。
+
+**v8 评估**（eval_results_v8.json，30 题）：
+
+| 指标 | v6 (top-3) | v7 (动态α=0.6) | v8 (+英文路) |
+|---|---|---|---|
+| Faithfulness | 0.9542 | 0.9835 | **0.9850** |
+| Answer Relevancy | 0.8490 | 0.8509 | **0.8525** |
+| Context Precision | 0.9472 | 0.8885 | **0.9075** |
+| Context Recall | — | 0.9000 | **0.9667** |
+
+- **Q5 翻盘**：CR 0→1.0，五个方面完整列出（与 reference 逐字一致）；
+- **Q15 恢复**：CR 0→1.0（英文路候选更稳，答案 chunk 稳过阈值）；
+- CR 29/30，仅剩 Q28（judge 误判，见 D.3）；
+- CP 回升 0.8885→0.9075：英文路带进真答案后 rerank 排序更准。
+
+**代价**：每次查询 +1 次 LLM 翻译调用 + 候选数略增（~25→~30）→ rerank API 费用线性微增，可控。
+
+## D.6 待办（P2，未实施）
+- Q28 judge 误判：RAGAS 对"数字细节"过于严苛，可考虑拆解 reference 原子声明或换 judge 模型；
+- 中文文档（用户 PPT）多一路英文噪声：当前由 rerank 滤除，若知识库中文占比上升需复测；
+- embedding 换 bge-m3 跨语言模型（根治鸿沟但需全量重建库，算力有限，暂缓）。
