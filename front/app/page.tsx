@@ -161,11 +161,14 @@ export default function Home() {
   }, [])
 
   const startNewChat = useCallback(() => {
+    // 若当前已是一个尚无任何消息的新对话，则不再重复创建（避免无限新建）
+    const current = activeId ? sessions.find((s) => s.id === activeId) : null
+    if (current && current.messages.length === 0) return
     const id = newSessionId()
     setSessions((prev) => [...prev, { id, title: '新对话', messages: [] }])
     setActiveId(id)
     setInput('')
-  }, [])
+  }, [activeId, sessions])
 
   const switchSession = useCallback((id: string) => {
     setActiveId(id)
