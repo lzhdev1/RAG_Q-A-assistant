@@ -334,8 +334,11 @@ export default function Home() {
             <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-content-3">
               RAGAS 评测
             </span>
-            <span className="rounded bg-content-2/10 px-1.5 py-0.5 text-[10px] font-medium text-content-2">
-              v8 · 英文路
+            <span
+              className="rounded bg-content-2/10 px-1.5 py-0.5 text-[10px] font-medium text-content-2"
+              title="v8：四路混合检索（BM25+向量+HyDE+英文翻译路），修复跨语言漏检（Q5 CR 0→1）；30 题评估 F 0.9850 / AR 0.8525 / CP 0.9075 / CR 0.9667"
+            >
+              v8
             </span>
           </div>
           <div className="flex flex-col gap-2">
