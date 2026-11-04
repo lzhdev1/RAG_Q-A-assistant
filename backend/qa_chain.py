@@ -133,10 +133,20 @@ class HyDEVectorRetriever(BaseRetriever):
 
 
 class DashScopeRerankerRetriever(BaseRetriever):
-    """DashScope Reranker 重排序检索器（HTTP API）+ 查询改写"""
+    """DashScope Reranker 重排序检索器（HTTP API）+ 查询改写
+
+    动态截断策略（v7，替代固定 top-3）：
+      1. 全量 rerank 打分（top_n = 候选数，不预先截断）
+      2. 相对阈值过滤：score >= top1 * alpha（alpha=0.6，top1 为每题天然锚点）
+      3. 硬顶兜底：最多返回 hard_cap 条（防平缓长队爆窗口）
+    数据依据：30 题评估集 rerank 分数探针——top1 跨 0.62~0.98，绝对阈值不可行；
+    相对阈值下保留条数 1~6，大多 2~4，硬顶 6 平时不生效、极端兜底。
+    """
     inner_retriever: BaseRetriever
     llm: ChatOpenAI
-    top_k: int = 3
+    top_k: int = 3          # 降级 fallback 用（API 失败时取前 top_k）
+    alpha: float = 0.6      # 相对阈值系数：score >= top1 * alpha 才保留
+    hard_cap: int = 6       # 动态截断后的硬顶条数
     model: str = "gte-rerank-hybrid"
     enable_query_rewrite: bool = True
 
@@ -168,7 +178,7 @@ class DashScopeRerankerRetriever(BaseRetriever):
 
         print(f"检索到 {len(candidates)} 个候选文档（去重后）")
 
-        # 3. 调用 DashScope Reranker API（Cohere 兼容格式）
+        # 3. 调用 DashScope Reranker API（Cohere 兼容格式），全量打分不截断
         try:
             api_key = os.getenv("OPENAI_API_KEY")
             model = os.getenv("RERANK_MODEL", self.model)
@@ -183,7 +193,7 @@ class DashScopeRerankerRetriever(BaseRetriever):
                     "model": model,
                     "query": query,  # 用原始查询做 rerank
                     "documents": [doc.page_content for doc in candidates],
-                    "top_n": min(self.top_k, len(candidates)),
+                    "top_n": min(len(candidates), 100),  # 全量打分（上限 100 防 API 限制）
                     "task": "Given a web search query, retrieve relevant passages that answer the query.",
                 },
                 timeout=30.0,
@@ -195,12 +205,24 @@ class DashScopeRerankerRetriever(BaseRetriever):
 
             result = response.json()
 
-            # 4. 按 reranker 排序结果返回（Cohere 兼容格式：results 在顶层）
+            # 4. 全量排序 + 相对阈值过滤 + 硬顶（动态截断，替代固定 top-3）
             if "results" in result:
-                ranked_docs = []
-                for item in result["results"]:
-                    ranked_docs.append(candidates[item["index"]])
-                return ranked_docs
+                ranked = [
+                    (float(item["relevance_score"]), candidates[item["index"]])
+                    for item in result["results"]
+                ]
+                if not ranked:
+                    return []
+
+                threshold = ranked[0][0] * self.alpha
+                kept = [(s, d) for s, d in ranked if s >= threshold]
+                if len(kept) > self.hard_cap:
+                    kept = kept[:self.hard_cap]
+                print(
+                    f"Rerank 动态截断: 全量{len(ranked)}条 top1={ranked[0][0]:.3f} "
+                    f"阈值={threshold:.3f} → 保留{len(kept)}条"
+                )
+                return [d for _, d in kept]
 
         except Exception as e:
             print(f"Reranker 调用失败，降级使用原始排序: {e}")
@@ -251,11 +273,13 @@ def build_rag_components():
         weights=[0.4, 0.3, 0.3],
     )
 
-    # 5. Reranker 重排序（DashScope API，返回 top-3；打分用原始查询）
+    # 5. Reranker 重排序（DashScope API，动态截断：相对阈值 α=0.6 + 硬顶 6 条；打分用原始查询）
     reranker_retriever = DashScopeRerankerRetriever(
         inner_retriever=ensemble_retriever,
         llm=llm,
-        top_k=3,
+        top_k=3,  # 仅 API 失败时的降级 fallback
+        alpha=0.6,
+        hard_cap=6,
         enable_query_rewrite=ENABLE_QUERY_REWRITE,
     )
 

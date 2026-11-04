@@ -121,6 +121,7 @@ def run_ragas_evaluation(results, llm, embeddings):
         Faithfulness,
         AnswerRelevancy,
         ContextPrecision,
+        ContextRecall,
     )
 
     # 包装 LangChain 模型供 RAGAS 使用
@@ -143,6 +144,7 @@ def run_ragas_evaluation(results, llm, embeddings):
         Faithfulness(llm=ragas_llm),
         AnswerRelevancy(llm=ragas_llm, embeddings=ragas_embeddings),
         ContextPrecision(llm=ragas_llm),
+        ContextRecall(llm=ragas_llm),  # v7：量化"召回是否全"，验证动态阈值防漏
     ]
 
     print("运行 RAGAS 评估...")
