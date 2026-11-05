@@ -19,7 +19,8 @@ export interface DocInfo {
 }
 
 // 所有请求走前端同源 /api/*，由 Next.js rewrites 服务端代理到后端容器
-const API_BASE = '/api'
+// 生产同域名路径分流：带 /rag-assistant 前缀（与 basePath 一致）
+const API_BASE = '/rag-assistant/api'
 
 /** SSE 流式问答：回调返回 sources、每个 token、完成、错误 */
 export async function askStream(

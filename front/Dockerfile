@@ -7,7 +7,9 @@ WORKDIR /app
 
 # 依赖层（package.json 不变时复用缓存）
 COPY package.json package-lock.json* ./
-RUN npm install --no-audit --no-fund
+# 生产环境用国内镜像加速（服务器访问 npm 官方源慢）
+RUN npm config set registry https://registry.npmmirror.com \
+    && npm install --no-audit --no-fund
 
 # 源码层
 COPY . .

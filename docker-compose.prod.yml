@@ -1,0 +1,54 @@
+# RAG_Q-A-assistant 服务器生产编排（同域名路径分流：/rag-assistant → rag-web:8110）
+# 与本地 docker-compose.yml 的区别：不挂载代码热更新、数据卷单独持久化、端口生产化
+
+services:
+  # PostgreSQL + pgvector（向量数据库容器，仅容器网络内部访问，不对外暴露端口）
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: rag-postgres
+    expose:
+      - "5432"
+    environment:
+      POSTGRES_USER: rag
+      POSTGRES_PASSWORD: rag
+      POSTGRES_DB: ragvector
+    volumes:
+      - ./pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U rag -d ragvector"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+    restart: unless-stopped
+
+  # RAG 应用服务（后端 FastAPI，仅容器网络内部访问，web 经 rewrites 代理）
+  rag-app:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: rag-app
+    env_file:
+      - ./backend/.env
+    volumes:
+      # 数据持久化：文档源与 Chroma 向量库（与本地 compose 一致，不含代码热更新挂载）
+      - ./backend/data/docs:/app/docs
+      - ./backend/data/chroma_data:/app/chroma_data
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # 前端（Next.js standalone，宿主 8110 供 nginx 反代）
+  web:
+    build:
+      context: ./front
+      dockerfile: Dockerfile
+      args:
+        # 构建期注入后端代理目标（web 构建时写死，rewrites 转发用）
+        - API_PROXY_TARGET=http://rag-app:8000
+    container_name: rag-web
+    ports:
+      - "8110:3000"
+    depends_on:
+      - rag-app
+    restart: unless-stopped
