@@ -1,4 +1,25 @@
 services:
+  # PostgreSQL + pgvector（向量数据库容器）
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: rag-postgres
+    ports:
+      # 5432 被本机 quantlab-db 占用，宿主侧改 5433（容器内仍 5432，rag-app 经 postgres:5432 访问不受影响）
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: rag
+      POSTGRES_PASSWORD: rag
+      POSTGRES_DB: ragvector
+    volumes:
+      # 数据目录放在 backend 挂载范围之外（项目根），避免 rag-app 热重载 watcher 监控无权限目录
+      - ./pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U rag -d ragvector"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+    restart: unless-stopped
+
   # RAG 应用服务（后端）
   rag-app:
     build:
@@ -15,6 +36,9 @@ services:
       - ./backend/data/chroma_data:/app/chroma_data
     env_file:
       - ./backend/.env
+    depends_on:
+      postgres:
+        condition: service_healthy
     restart: unless-stopped
 
   # 前端服务（Next.js，自研 Open WebUI 风格界面）

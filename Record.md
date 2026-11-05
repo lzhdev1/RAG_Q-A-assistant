@@ -98,3 +98,24 @@
   v7      | rerank 动态截断（α=0.6+顶6）   | 0.9835 | 0.8509 | 0.8885 | 0.9000
   v8      | 四路混合 + 英文翻译检索路     | 0.9850 | 0.8525 | 0.9075 | 0.9667
   --------|------------------------------|--------------|------------------|------------------|------------------
+
+10. v9（存储层切换 PostgreSQL + pgvector 容器）说明（2026-11-05）
+  - 背景：向量库由 chroma 嵌入式（进程内 SQLite，数据随 rag-app 容器挂载目录）改为独立
+    PostgreSQL + pgvector 容器——用户要求数据库换成 PostgreSQL、确认具备向量能力、并以容器方式部署。
+  - 架构：
+    · docker-compose.yml 新增 postgres 服务（镜像 pgvector/pgvector:pg16，容器 rag-postgres）；
+    · 端口：容器内 5432，宿主映射 **5433**（本机 5432 已被 quantlab-db 占用）；
+    · 凭据/库：rag / rag / ragvector；连接串 `postgresql+psycopg2://rag:rag@postgres:5432/ragvector`（容器内），宿主侧调试用 localhost:5433；
+    · 数据卷 `./pg_data`（项目根，置于 backend 挂载之外，避免 rag-app watchfiles 热重载扫描无权限目录崩溃）；
+    · rag-app 通过 depends_on + healthcheck（pg_isready）保证数据库就绪后再启动。
+  - 代码改动：
+    · vector_store.py：`langchain_chroma.Chroma` → `langchain_community.vectorstores.PGVector`；
+      0.3.0 参数名为 `embedding_function`（非 `embeddings`）；删除 chroma 专属 collection_metadata/HNSW 参数；
+      `_collection.delete(ids=...)` → `delete(ids=...)`；PARSER_VERSION **4→5** 触发全量重建；
+    · requirements.txt：+ sqlalchemy>=2.0 / pgvector / psycopg2-binary；
+    · Dockerfile：pip 源由阿里云切清华（阿里源 2026-11 起对 wheel 下载返回 403，torch 大包构建卡死）；
+      移除本地 torch/triton wheel 预装步骤（wheel 已不在仓库，改由 requirements 在线安装）。
+  - 数据迁移：全量重建而非拷贝——v5 重建清空旧 chunk id 后重新向量化 4 篇文档 = **553 chunks**，
+    与旧 chroma 库完全一致；旧数据 backend/data/chroma_data 保留未删（可回退）；manifest 增量机制不变。
+  - 验证：`langchain_pg_embedding` 表 553 行；`/health` running；`/documents` 4 篇；问答冒烟返回结构化答案+引用来源。
+  - 说明：存储层变更不改变检索算法与重排逻辑，RAGAS 指标沿用 v8（F 0.9850 / AR 0.8525 / CP 0.9075 / CR 0.9667），如需复测可重跑评估脚本。

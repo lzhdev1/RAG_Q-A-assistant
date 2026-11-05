@@ -13,20 +13,20 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 # 只要 requirements.txt 不变，这一层就不会重新构建
 COPY requirements.txt .
 
-# 优化点2.1: 配置 pip 使用清华镜像（实测 ~15MB/s，远快于阿里云 ~100KB/s）+ 超时重试
-RUN pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple \
+# 优化点2.1: 配置 pip 使用清华镜像 + 超时重试
+# （原阿里云源 mirrors.aliyun.com 于 2026-11 起对 wheel 下载返回 403 Forbidden，导致 torch 大包构建卡死，改为清华源）
+RUN pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple/ \
     && pip config set global.trusted-host pypi.tuna.tsinghua.edu.cn \
     && pip config set global.timeout 300 \
     && pip config set install.retries 10
 
-# 优化点2.2: 预装 PyTorch (ragas 依赖)。torch==2.14.1 普通版清华源有 (554MB, 15MB/s 约 40s 完成)；
-# 曾锁 torch==2.14.1+cpu 省 350MB，但 +cpu 版仅 pytorch.org 提供且官方源网络极不稳定（实测 0~25MB/s 波动，
-# BuildKit VM 内 ~50KB/s，pip 反复校验重试）→ 换清华普通版保证构建确定性
-RUN pip install --no-cache-dir --prefix=/install torch==2.14.1
+# 优化点2.2: PyTorch (ragas 依赖) 由 requirements.txt 安装（torch==2.14.1）；
+# 历史版本曾预下载 torch/triton wheel 到构建上下文本地安装以规避服务器在线下载挂起，
+# 本机开发环境在线源稳定，wheel 文件也已不在仓库中，改为直接走 pip 源安装。
 
-# 优化点2.3: SQLAlchemy 2.0.55 在阿里云镜像的 wheel 与官方 hash 不一致（pip 校验失败），
-# 先单独安装锁定版本（清华源 hash 与文件一致），安装 requirements 时该约束已满足、跳过再下载
-RUN pip install --no-cache-dir --prefix=/install "SQLAlchemy==2.0.55"
+# 优化点2.3: SQLAlchemy 2.0.55 曾因阿里云镜像 wheel 与官方 hash 不一致需单独用清华源安装；
+# 现全局源已切清华，该约束安装时已满足，保留原步骤避免重复下载
+RUN pip install --no-cache-dir --prefix=/install -i https://pypi.tuna.tsinghua.edu.cn/simple "SQLAlchemy==2.0.55"
 
 RUN pip install --no-cache-dir --prefix=/install -r requirements.txt
 

@@ -1,4 +1,4 @@
-from langchain_chroma import Chroma
+from langchain_community.vectorstores import PGVector
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_community.embeddings import DashScopeEmbeddings
 from langchain_core.documents import Document
@@ -13,17 +13,14 @@ from pptx import Presentation
 
 PERSIST_DIR = "./chroma_data"
 MANIFEST_PATH = os.path.join(PERSIST_DIR, "manifest.json")
-PARSER_VERSION = 4  # 解析逻辑版本：v2 引入 NFKC 连字归一化；v3 chunk_size 500→800；v4 修复 chromadb HNSW 图不落盘（batch_size/sync_threshold 调小强制 persist）。变更时全量重建向量库
+PARSER_VERSION = 5  # 解析逻辑版本：v2 NFKC 连字归一化；v3 chunk_size 500→800；v4 chromadb HNSW 持久化修复；v5 存储切换 PostgreSQL+pgvector。变更时全量重建向量库
 
-# chromadb 0.5.23 持久化缺陷修复：
-#   默认 batch_size=100 / sync_threshold=1000，一次性写入 <1000 条时 _persist() 永不触发，
-#   HNSW 图（link_lists.bin）不落盘 → 每次新进程从 SQLite 重建随机图 → ANN 检索间歇性漏检（Q19 根因）。
-#   调小两者并让 batch_size==sync_threshold：每写满一个 batch 立即持久化，图稳定落盘。
-CHROMA_COLLECTION_METADATA = {
-    "hnsw:batch_size": 50,
-    "hnsw:sync_threshold": 50,
-    "hnsw:num_threads": 1,  # 单线程建图，图确定性更高
-}
+# PostgreSQL + pgvector（容器内 host=postgres:5432，宿主侧调试可覆盖为 localhost:5433）
+COLLECTION_NAME = "langchain"
+DATABASE_URL = os.getenv(
+    "DATABASE_URL",
+    "postgresql+psycopg2://rag:rag@localhost:5433/ragvector",
+)
 
 
 # ── 文本归一化（连字字符展开） ─────────────────────────────────────
@@ -133,10 +130,10 @@ def sync_vectorstore(docs_dir="docs"):
     """
     embedding_model = _get_embeddings()
 
-    vectorstore = Chroma(
-        persist_directory=PERSIST_DIR,
+    vectorstore = PGVector(
         embedding_function=embedding_model,
-        collection_metadata=CHROMA_COLLECTION_METADATA,
+        collection_name=COLLECTION_NAME,
+        connection_string=DATABASE_URL,
     )
 
     manifest = _load_manifest()
@@ -158,11 +155,10 @@ def sync_vectorstore(docs_dir="docs"):
         added = list(current_files.keys())
         removed = []
         # 删除旧版本的全部 chunk id
-        collection = vectorstore._collection
         for name, info in old_files.items():
             ids_to_del = info.get("chunk_ids", [])
             if ids_to_del:
-                collection.delete(ids=ids_to_del)
+                vectorstore.delete(ids=ids_to_del)
                 print(f"  ✗ 清除旧版本 {name} 的 {len(ids_to_del)} 个向量")
         old_files = {}
     else:
@@ -197,11 +193,10 @@ def sync_vectorstore(docs_dir="docs"):
     # ── 处理已删除的文件 ──
     if removed:
         print(f"移除 {len(removed)} 个已删除文档的向量...")
-        collection = vectorstore._collection
         for name in removed:
             ids_to_del = old_files[name].get("chunk_ids", [])
             if ids_to_del:
-                collection.delete(ids=ids_to_del)
+                vectorstore.delete(ids=ids_to_del)
             del manifest["files"][name]
             print(f"  ✗ {name} 已移除")
 
@@ -214,10 +209,10 @@ def sync_vectorstore(docs_dir="docs"):
 
 def get_vectorstore():
     """仅加载已有向量库，不做任何同步"""
-    return Chroma(
-        persist_directory=PERSIST_DIR,
+    return PGVector(
         embedding_function=_get_embeddings(),
-        collection_metadata=CHROMA_COLLECTION_METADATA,
+        collection_name=COLLECTION_NAME,
+        connection_string=DATABASE_URL,
     )
 
 

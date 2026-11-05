@@ -41,3 +41,7 @@ Desktop.ini
 # ===== 其他 =====
 *.tmp
 *.bak
+
+# ===== 数据库数据（不入库） =====
+pg_data/
+pg_data_old/
