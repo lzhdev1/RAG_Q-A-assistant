@@ -1,2 +1,0 @@
-torch==2.6.0+cpu
-transformers==4.55.3

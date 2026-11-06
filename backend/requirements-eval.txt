@@ -1,0 +1,4 @@
+# 离线评估专用依赖（只在跑 evaluate.py / RAGAS 指标时需要）
+# 生产运行时用 requirements.txt 即可；需要评估时在容器内执行：
+#   pip install --no-cache-dir -r requirements-eval.txt
+ragas>=0.2.0
