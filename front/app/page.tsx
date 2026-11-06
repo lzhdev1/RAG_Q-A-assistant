@@ -289,6 +289,16 @@ export default function Home() {
             <LogoIcon size={14} />
           </span>
           <span className="flex-1">RAG Q&amp;A</span>
+          <a
+            href="https://lzhshow.top"
+            className="flex h-8 items-center gap-1 rounded-lg border border-border-strong px-2 text-[11px] text-content-2 transition hover:bg-surface-2 hover:text-content"
+            title="返回作品集"
+          >
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M19 12H5M12 19l-7-7 7-7" />
+            </svg>
+            作品集
+          </a>
           <button
             className="flex h-8 w-8 items-center justify-center rounded-lg border border-border-strong text-content-2 transition hover:bg-surface-2 hover:text-content"
             onClick={toggleTheme}
